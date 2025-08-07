@@ -24,9 +24,8 @@ export const en = {
   'features.govai': 'GOV-AI',
   
   // Hero Section
-  'hero.title.experience': 'Experience the',
-  'hero.title.revolution': 'Revolution',
-  'hero.subtitle': 'The citizens closer to the Government',
+  'hero.title': 'nGomna',
+  'hero.subtitle': 'The citizens closer to government',
   'hero.download': 'Download Now',
   'hero.free': '100% Free',
   'hero.noads': 'No Ads',
@@ -49,6 +48,23 @@ export const en = {
   'about.cta': 'Discover More',
   
   // Features Section
+  'features.payslips.title': 'Payslips Management',
+  'features.payslips.desc': 'Access, download, and manage your monthly payslips with ease and security.',
+  'features.notifications.title': 'Smart Notifications',
+  'features.notifications.desc': 'Receive instant alerts for important updates and government announcements.',
+  'features.messaging.title': 'Secure Messaging',
+  'features.messaging.desc': 'Communicate securely with government services through encrypted channels.',
+  'features.security.title': 'Advanced Security',
+  'features.security.desc': 'Military-grade encryption and biometric authentication for maximum protection.',
+  'features.census.title': 'Census & Demographics',
+  'features.census.desc': 'Access population data and participate in national census activities.',
+  'features.govai.title': 'GOV-AI Assistant',
+  'features.govai.desc': 'AI-powered virtual assistant for intelligent government service support.',
+  'features.dgi.title': 'DGI Tax Services',
+  'features.dgi.desc': 'Streamlined tax calculations, filing, and payment processing.',
+  'features.otp.title': 'OTP Authentication',
+  'features.otp.desc': 'Secure one-time password system for enhanced transaction security.',
+  
   'features.title': 'Why Choose nGomna?',
   'features.subtitle': 'Discover the powerful features that make nGomna the perfect choice for your mobile experience.',
   'features.fast.title': 'Lightning Fast',

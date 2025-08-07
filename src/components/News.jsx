@@ -310,6 +310,59 @@ const News = () => {
           </motion.button>
         </AnimatedSection>
       </div>
+      
+      <style jsx>{`
+        @media (max-width: 639px) {
+          .carousel-container {
+            padding: 20px 16px;
+            gap: 24px;
+          }
+          
+          .description {
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+          }
+          
+          .smaller-text {
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+          }
+          
+          .phone-mockup {
+            width: 220px;
+            height: 440px;
+          }
+          
+          .phone-notch {
+            width: 120px;
+            height: 24px;
+          }
+          
+          .learn-more-btn {
+            padding: 8px 16px;
+            font-size: 13px;
+          }
+          
+          .play-pause-btn {
+            width: 36px;
+            height: 36px;
+          }
+        }
+
+        /* Responsive fixes for small screens */
+        @media (max-width: 768px) {
+          .grid.sm\\:grid-cols-2.lg\\:grid-cols-3.gap-6.lg\\:gap-8 {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+          }
+          
+          .grid.lg\\:grid-cols-2.gap-6.lg\\:gap-8.mb-8.lg\\:mb-12 {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+          }
+        }
+      `}</style>
     </section>
   );
 };

@@ -22,19 +22,16 @@ const HomePage = () => {
       <div id="features">
         <Features />
       </div>
-      <div id="payslips">
-        <PayslipsFeatures />
-      </div>
-      <div id="screenshots" className="hidden sm:block">
+      <div id="screenshots">
         <Screenshots />
       </div>
-      <div id="news" className="hidden sm:block">
+      <div id="news">
         <News />
       </div>
-      <div id="comments" className="hidden sm:block">
+      <div id="comments">
         <Comments />
       </div>
-      <div id="faq" className="hidden sm:block">
+      <div id="faq">
         <FAQ />
       </div>
       <div id="download">

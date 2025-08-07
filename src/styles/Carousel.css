@@ -425,6 +425,11 @@
   .carousel-text-area {
     padding-right: 0;
     max-width: 100%;
+    display: block !important;
+  }
+  
+  .text-content-wrapper {
+    margin-bottom: 20px;
   }
 }
 
@@ -432,6 +437,10 @@
   .carousel-container {
     padding: 20px 16px;
     gap: 24px;
+  }
+  
+  .carousel-text-area {
+    display: block !important;
   }
   
   .description {

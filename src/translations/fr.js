@@ -24,9 +24,8 @@ export const fr = {
   'features.govai': 'GOV-IA',
   
   // Hero Section
-  'hero.title.experience': 'Découvrez la',
-  'hero.title.revolution': 'Révolution',
-  'hero.subtitle': 'Les citoyens plus proches du Gouvernement',
+  'hero.title': 'nGomna',
+  'hero.subtitle': 'Les citoyens plus proches du gouvernement',
   'hero.download': 'Télécharger',
   'hero.free': '100% Gratuit',
   'hero.noads': 'Sans Pub',
@@ -49,6 +48,23 @@ export const fr = {
   'about.cta': 'Découvrir Plus',
   
   // Features Section
+  'features.payslips.title': 'Gestion des Bulletins de Paie',
+  'features.payslips.desc': 'Accédez, téléchargez et gérez vos bulletins de paie mensuels avec facilité et sécurité.',
+  'features.notifications.title': 'Notifications Intelligentes',
+  'features.notifications.desc': 'Recevez des alertes instantanées pour les mises à jour importantes et les annonces gouvernementales.',
+  'features.messaging.title': 'Messagerie Sécurisée',
+  'features.messaging.desc': 'Communiquez en toute sécurité avec les services gouvernementaux via des canaux chiffrés.',
+  'features.security.title': 'Sécurité Avancée',
+  'features.security.desc': 'Chiffrement de niveau militaire et authentification biométrique pour une protection maximale.',
+  'features.census.title': 'Recensement et Démographie',
+  'features.census.desc': 'Accédez aux données de population et participez aux activités de recensement national.',
+  'features.govai.title': 'Assistant GOV-IA',
+  'features.govai.desc': 'Assistant virtuel alimenté par l\'IA pour un support intelligent des services gouvernementaux.',
+  'features.dgi.title': 'Services Fiscaux DGI',
+  'features.dgi.desc': 'Calculs fiscaux rationalisés, déclaration et traitement des paiements.',
+  'features.otp.title': 'Authentification OTP',
+  'features.otp.desc': 'Système de mot de passe à usage unique sécurisé pour une sécurité de transaction renforcée.',
+  
   'features.title': 'Pourquoi Choisir nGomna?',
   'features.subtitle': 'Découvrez les fonctionnalités puissantes qui font de nGomna le choix parfait pour votre expérience mobile.',
   'features.fast.title': 'Ultra Rapide',

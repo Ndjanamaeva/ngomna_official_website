@@ -144,13 +144,13 @@ const Hero = () => {
       <div className="relative z-10 container mx-auto px-4 sm:px-6">
         <div className="max-w-2xl lg:max-w-3xl xl:max-w-4xl ml-0 sm:ml-4 md:ml-8">
           <motion.h1 
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight text-left font-sans"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight text-left font-sans"
             style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            nGomna
+            {t('hero.title')}
           </motion.h1>
           
           <motion.p
@@ -160,7 +160,7 @@ const Hero = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
           >
-            The citizens closer to government
+            {t('hero.subtitle')}
           </motion.p>
           
           <motion.div 

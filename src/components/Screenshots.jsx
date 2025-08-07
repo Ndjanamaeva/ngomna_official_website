@@ -18,34 +18,52 @@ const Screenshots = () => {
   
   const imageData = [
     { 
-      src: 'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=800', 
-      description: t('screenshots.payslips'), 
-      smallerText: t('screenshots.payslips.desc'),
-      learnMoreLink: '/Payslips'
+      src: 'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=800',
+      description: t('features.payslips.title'),
+      smallerText: t('features.payslips.desc'),
+      learnMoreLink: '/payslips'
     },
     { 
-      src: 'https://images.pexels.com/photos/607812/pexels-photo-607812.jpeg?auto=compress&cs=tinysrgb&w=800', 
-      description: t('screenshots.view'), 
-      smallerText: t('screenshots.view.desc'), 
-      learnMoreLink: '/Payslips' 
+      src: 'https://images.pexels.com/photos/607812/pexels-photo-607812.jpeg?auto=compress&cs=tinysrgb&w=800',
+      description: t('features.notifications.title'),
+      smallerText: t('features.notifications.desc'),
+      learnMoreLink: '/notifications'
     },
     { 
-      src: 'https://images.pexels.com/photos/374074/pexels-photo-374074.jpeg?auto=compress&cs=tinysrgb&w=800', 
-      description: t('screenshots.download'), 
-      smallerText: t('screenshots.download.desc'), 
-      learnMoreLink: '/Payslips' 
+      src: 'https://images.pexels.com/photos/374074/pexels-photo-374074.jpeg?auto=compress&cs=tinysrgb&w=800',
+      description: t('features.messaging.title'),
+      smallerText: t('features.messaging.desc'),
+      learnMoreLink: '/messaging'
     },
     { 
-      src: 'https://images.pexels.com/photos/1739842/pexels-photo-1739842.jpeg?auto=compress&cs=tinysrgb&w=800', 
-      description: t('screenshots.share'), 
-      smallerText: t('screenshots.share.desc'), 
-      learnMoreLink: '/Payslips' 
+      src: 'https://images.pexels.com/photos/1739842/pexels-photo-1739842.jpeg?auto=compress&cs=tinysrgb&w=800',
+      description: t('features.security.title'),
+      smallerText: t('features.security.desc'),
+      learnMoreLink: '/security'
     },
     { 
-      src: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800', 
-      description: t('screenshots.store'), 
-      smallerText: t('screenshots.store.desc'), 
-      learnMoreLink: '/Payslips' 
+      src: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800',
+      description: t('features.census.title'),
+      smallerText: t('features.census.desc'),
+      learnMoreLink: '/census'
+    },
+    {
+      src: 'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=800',
+      description: t('features.govai.title'),
+      smallerText: t('features.govai.desc'),
+      learnMoreLink: '/gov-ai'
+    },
+    {
+      src: 'https://images.pexels.com/photos/1068523/pexels-photo-1068523.jpeg?auto=compress&cs=tinysrgb&w=800',
+      description: t('features.dgi.title'),
+      smallerText: t('features.dgi.desc'),
+      learnMoreLink: '/dgi'
+    },
+    {
+      src: 'https://images.pexels.com/photos/60504/security-protection-anti-virus-software-60504.jpeg?auto=compress&cs=tinysrgb&w=800',
+      description: t('features.otp.title'),
+      smallerText: t('features.otp.desc'),
+      learnMoreLink: '/otp'
     },
   ];
   
@@ -125,10 +143,10 @@ const Screenshots = () => {
         </AnimatedSection>
 
         <AnimatedSection delay={0.4}>
-          <div className={`carousel-container ${window.innerWidth < 640 ? 'sm:block' : ''}`} ref={carouselRef}>
+          <div className="carousel-container" ref={carouselRef}>
             {/* Enhanced Text Area with Glass Morphism */}
             <motion.div 
-              className="carousel-text-area hidden sm:block"
+              className="carousel-text-area"
               initial={{ x: -50, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.8, ease: "easeOut" }}

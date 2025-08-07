@@ -73,7 +73,7 @@ const FAQ = () => {
         </AnimatedSection>
 
         {/* FAQ Items */}
-        <div className="max-w-4xl mx-auto mb-16">
+        <div className="max-w-4xl mx-auto mb-8 sm:mb-16">
           {faqs.map((faq, index) => (
             <AnimatedSection
               key={faq.id}
@@ -81,7 +81,7 @@ const FAQ = () => {
               direction="up"
             >
               <motion.div
-                className="bg-white rounded-2xl shadow-lg mb-4 overflow-hidden border border-gray-100 hover:border-green-200 transition-colors duration-300"
+                className="bg-white rounded-xl sm:rounded-2xl shadow-lg mb-3 sm:mb-4 overflow-hidden border border-gray-100 hover:border-green-200 transition-colors duration-300"
                 whileHover={{ 
                   scale: 1.01,
                   boxShadow: "0 10px 30px -10px rgba(0, 0, 0, 0.1)"
@@ -90,18 +90,18 @@ const FAQ = () => {
               >
                 <motion.button
                   onClick={() => toggleItem(faq.id)}
-                  className="w-full p-4 sm:p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200"
+                  className="w-full p-3 sm:p-4 md:p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200"
                   whileHover={{ backgroundColor: "rgba(249, 250, 251, 0.8)" }}
                 >
-                  <div className="flex items-center space-x-3 sm:space-x-4 flex-1">
+                  <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4 flex-1">
                     <motion.div 
-                      className="w-12 h-12 sm:w-16 sm:h-16 bg-green-400 rounded-3xl flex items-center justify-center text-white shadow-md flex-shrink-0"
+                      className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-green-400 rounded-2xl sm:rounded-3xl flex items-center justify-center text-white shadow-md flex-shrink-0"
                       whileHover={{ scale: 1.1, rotate: 5 }}
                       transition={{ type: "spring", stiffness: 300 }}
                     >
-                      <HelpCircle className="w-5 h-5" />
+                      <HelpCircle className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />
                     </motion.div>
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 pr-2 sm:pr-4">
+                    <h3 className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 pr-1 sm:pr-2 md:pr-4">
                       {faq.question}
                     </h3>
                   </div>
@@ -109,7 +109,7 @@ const FAQ = () => {
                     animate={{ rotate: openItems.has(faq.id) ? 180 : 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                   >
-                    <ChevronDown className="w-6 h-6 text-gray-500" />
+                    <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-gray-500" />
                   </motion.div>
                 </motion.button>
                 
@@ -123,13 +123,13 @@ const FAQ = () => {
                       className="overflow-hidden"
                     >
                       <motion.div 
-                        className="px-4 sm:px-6 pb-4 sm:pb-6 pl-16 sm:pl-20"
+                        className="px-3 sm:px-4 md:px-6 pb-3 sm:pb-4 md:pb-6 pl-10 sm:pl-16 md:pl-20"
                         initial={{ y: -10, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: -10, opacity: 0 }}
                         transition={{ duration: 0.2, delay: 0.1 }}
                       >
-                        <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+                        <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed">
                           {faq.answer}
                         </p>
                       </motion.div>

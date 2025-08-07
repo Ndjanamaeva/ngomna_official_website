@@ -102,7 +102,7 @@ const About = () => {
             transition={{ duration: 0.8, ease: "easeOut" }}
             viewport={{ once: true }}
           >
-            About nGomna
+            {t('about.title')}
           </motion.h2>
         </AnimatedSection>
 

@@ -230,6 +230,18 @@ const Comments = () => {
         .comments-swiper .swiper-pagination {
           bottom: 0 !important;
         }
+        
+        @media (max-width: 768px) {
+          .comments-swiper .swiper-slide {
+            width: 300px !important;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .comments-swiper .swiper-slide {
+            width: 280px !important;
+          }
+        }
       `}</style>
     </section>
   );
