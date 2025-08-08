@@ -47,6 +47,30 @@ export const en = {
   'about.partnership': 'In partnership with',
   'about.cta': 'Discover More',
   
+  // About Vision Section
+  'about.vision.title': 'Our Vision',
+  'about.vision.point1': 'Bring Cameroonian public servants closer to government services',
+  'about.vision.point2': 'Bring ordinary citizens closer to government services',
+  'about.vision.point3': 'Foundational building block of e-citizenship',
+  'about.vision.point4': 'Protection of the identity and data of public servants',
+  
+  // About Mission Section
+  'about.mission.title': 'Our Mission',
+  'about.mission.point1': 'Download payslips via account using internet-connected phone',
+  'about.mission.point2': 'Display real-time notifications and payslip status updates',
+  'about.mission.point3': 'Protect data of every user registered in the system',
+  'about.mission.point4': 'Support for account reset, installation assistance, and bug tracking',
+  
+  // About Future Perspectives Section
+  'about.future.title': 'Future Perspectives',
+  'about.future.description': 'Expanding our platform with new services to enhance digital sovereignty and secure communications',
+  'about.future.service1.title': 'Government Messaging',
+  'about.future.service1.description': 'Secure communications between public servants, reducing reliance on external platforms',
+  'about.future.service2.title': 'E-Services Integration',
+  'about.future.service2.description': 'Comprehensive digital services platform for all government interactions',
+  'about.future.service3.title': 'Data Sovereignty',
+  'about.future.service3.description': 'State control over citizen data with advanced security measures',
+  
   // Features Section
   'features.payslips.title': 'Payslips Management',
   'features.payslips.desc': 'Access, download, and manage your monthly payslips with ease and security.',

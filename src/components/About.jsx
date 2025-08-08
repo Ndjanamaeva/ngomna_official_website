@@ -37,56 +37,56 @@ const About = () => {
   const visionPoints = [
     {
       icon: <Users className="w-6 h-6" />,
-      text: "Bring Cameroonian public servants closer to government services"
+      text: t('about.vision.point1')
     },
     {
       icon: <Globe className="w-6 h-6" />,
-      text: "Bring ordinary citizens closer to government services"
+      text: t('about.vision.point2')
     },
     {
       icon: <CheckCircle className="w-6 h-6" />,
-      text: "Foundational building block of e-citizenship"
+      text: t('about.vision.point3')
     },
     {
       icon: <Shield className="w-6 h-6" />,
-      text: "Protection of the identity and data of public servants"
+      text: t('about.vision.point4')
     }
   ];
 
   const missionPoints = [
     {
       icon: <Smartphone className="w-6 h-6" />,
-      text: "Download payslips via account using internet-connected phone"
+      text: t('about.mission.point1')
     },
     {
       icon: <Bell className="w-6 h-6" />,
-      text: "Display real-time notifications and payslip status updates"
+      text: t('about.mission.point2')
     },
     {
       icon: <Lock className="w-6 h-6" />,
-      text: "Protect data of every user registered in the system"
+      text: t('about.mission.point3')
     },
     {
       icon: <Users className="w-6 h-6" />,
-      text: "Support for account reset, installation assistance, and bug tracking"
+      text: t('about.mission.point4')
     }
   ];
 
   const futureServices = [
     {
       icon: <Mail className="w-8 h-8" />,
-      title: "Government Messaging",
-      description: "Secure communications between public servants, reducing reliance on external platforms"
+      title: t('about.future.service1.title'),
+      description: t('about.future.service1.description')
     },
     {
       icon: <Globe className="w-8 h-8" />,
-      title: "E-Services Integration",
-      description: "Comprehensive digital services platform for all government interactions"
+      title: t('about.future.service2.title'),
+      description: t('about.future.service2.description')
     },
     {
       icon: <Shield className="w-8 h-8" />,
-      title: "Data Sovereignty",
-      description: "State control over citizen data with advanced security measures"
+      title: t('about.future.service3.title'),
+      description: t('about.future.service3.description')
     }
   ];
 
@@ -128,7 +128,7 @@ const About = () => {
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center">
                   <Eye className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">Our Vision</h3>
+                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">{t('about.vision.title')}</h3>
               </div>
               
               <div className="space-y-4">
@@ -161,7 +161,7 @@ const About = () => {
                 <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center">
                   <Target className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">Our Mission</h3>
+                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">{t('about.mission.title')}</h3>
               </div>
               
               <div className="space-y-4">
@@ -200,11 +200,9 @@ const About = () => {
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center">
                 <ArrowRight className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">Future Perspectives</h3>
+              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">{t('about.future.title')}</h3>
             </div>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Expanding our platform with new services to enhance digital sovereignty and secure communications
-            </p>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">{t('about.future.description')}</p>
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8">

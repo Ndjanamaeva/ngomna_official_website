@@ -47,6 +47,30 @@ export const fr = {
   'about.partnership': 'En partenariat avec',
   'about.cta': 'Découvrir Plus',
   
+  // About Vision Section
+  'about.vision.title': 'Notre Vision',
+  'about.vision.point1': 'Rapprocher les fonctionnaires camerounais des services gouvernementaux',
+  'about.vision.point2': 'Rapprocher les citoyens ordinaires des services gouvernementaux',
+  'about.vision.point3': 'Bloc de construction fondamental de la citoyenneté électronique',
+  'about.vision.point4': 'Protection de l\'identité et des données des fonctionnaires',
+  
+  // About Mission Section
+  'about.mission.title': 'Notre Mission',
+  'about.mission.point1': 'Télécharger les bulletins de paie via un compte utilisant un téléphone connecté à Internet',
+  'about.mission.point2': 'Afficher les notifications en temps réel et les mises à jour du statut des bulletins de paie',
+  'about.mission.point3': 'Protéger les données de chaque utilisateur enregistré dans le système',
+  'about.mission.point4': 'Support pour la réinitialisation de compte, l\'assistance à l\'installation et le suivi des bogues',
+  
+  // About Future Perspectives Section
+  'about.future.title': 'Perspectives d\'Avenir',
+  'about.future.description': 'Élargir notre plateforme avec de nouveaux services pour améliorer la souveraineté numérique et les communications sécurisées',
+  'about.future.service1.title': 'Messagerie Gouvernementale',
+  'about.future.service1.description': 'Communications sécurisées entre fonctionnaires, réduisant la dépendance aux plateformes externes',
+  'about.future.service2.title': 'Intégration des E-Services',
+  'about.future.service2.description': 'Plateforme de services numériques complète pour toutes les interactions gouvernementales',
+  'about.future.service3.title': 'Souveraineté des Données',
+  'about.future.service3.description': 'Contrôle étatique sur les données des citoyens avec des mesures de sécurité avancées',
+  
   // Features Section
   'features.payslips.title': 'Gestion des Bulletins de Paie',
   'features.payslips.desc': 'Accédez, téléchargez et gérez vos bulletins de paie mensuels avec facilité et sécurité.',
