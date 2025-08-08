@@ -2,7 +2,6 @@ import React from 'react';
 import Hero from '../components/Hero';
 import About from '../components/About';
 import Features from '../components/Features';
-import PayslipsFeatures from '../components/PayslipsFeatures';
 import Screenshots from '../components/Screenshots';
 import News from '../components/News';
 import Comments from '../components/Comments';
