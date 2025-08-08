@@ -96,7 +96,7 @@ const About = () => {
         {/* Header */}
         <AnimatedSection className="text-center mb-16">
           <motion.h2 
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 px-4"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 px-4"
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
@@ -104,6 +104,15 @@ const About = () => {
           >
             {t('about.title')}
           </motion.h2>
+          <motion.p 
+            className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto px-4"
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            viewport={{ once: true }}
+          >
+            {t('about.description')}
+          </motion.p>
         </AnimatedSection>
 
         {/* Mission and Vision Section */}
