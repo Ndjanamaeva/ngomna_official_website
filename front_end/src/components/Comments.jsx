@@ -1,9 +1,11 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Star, Quote } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import AnimatedSection from './AnimatedSection';
+import apiService from '../services/api';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -15,69 +17,71 @@ import { EffectCoverflow, Pagination, Autoplay } from 'swiper/modules';
 
 const Comments = () => {
   const { t } = useLanguage();
+  const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        setLoading(true);
+        const data = await apiService.getAllComments();
+        setComments(data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching comments:', err);
+        setError(err.message);
+        // Fallback to static data
+        setComments(fallbackComments);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchComments();
+  }, []);
   
-  const comments = [
+  // Fallback comments for when API is not available
+  const fallbackComments = [
     {
       id: 1,
       name: "Vladimir Cruise",
       username: "@vladimir_cruise",
-      avatar: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150",
+      avatar_url: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150",
       rating: 5,
-      comment: "Cette application est très utile pour les usagers car elle facilite l'accès à son bulletin de solde peu importe l'endroit où on se trouve et empêche ainsi de se faire extorquer 1000F à l'extérieur du MINFI.",
-      timeAgo: "14 juillet 2025",
+      comment_en: "This application is very useful for users as it facilitates access to their payslip regardless of where they are and thus prevents being extorted 1000F outside MINFI.",
+      comment_fr: "Cette application est très utile pour les usagers car elle facilite l'accès à son bulletin de solde peu importe l'endroit où on se trouve et empêche ainsi de se faire extorquer 1000F à l'extérieur du MINFI.",
+      date: "2025-07-14",
       verified: true
     },
     {
       id: 2,
       name: "Freddy Djilo",
       username: "@freddy_djilo",
-      avatar: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150",
+      avatar_url: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150",
       rating: 5,
-      comment: "Bonjour, chers développeurs. Votre application est une solution salvatrice pour les utilisateurs. Nous (je) la recommandons dès que nous en avons l'occasion.",
-      timeAgo: "30 mars 2024",
+      comment_en: "Hello, dear developers. Your application is a saving solution for users. We (I) recommend it whenever we have the opportunity.",
+      comment_fr: "Bonjour, chers développeurs. Votre application est une solution salvatrice pour les utilisateurs. Nous (je) la recommandons dès que nous en avons l'occasion.",
+      date: "2024-03-30",
       verified: true
-    },
-    {
-      id: 3,
-      name: "Carmelo Megha",
-      username: "@carmelo_megha",
-      avatar: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150",
-      rating: 5,
-      comment: "C'est appli est là bienvenue dans notre pays. Tout en espérant qu'avec les mises à jour futures, les autres fonctionnalités seront disponibles.",
-      timeAgo: "24 août 2023",
-      verified: false
-    },
-    {
-      id: 4,
-      name: "Patou Ngoutane",
-      username: "@patou_ngoutane",
-      avatar: "https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=150",
-      rating: 5,
-      comment: "Bonjour cher ngomna votre application est salvatrice.",
-      timeAgo: "6 janvier 2024",
-      verified: true
-    },
-    {
-      id: 5,
-      name: "Kris M",
-      username: "@kris_m",
-      avatar: "https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=150",
-      rating: 5,
-      comment: "Je la recommande vivement ! Les mises à jour fonctionnent maintenant !",
-      timeAgo: "5 août 2024",
-      verified: false
-    },
-    {
-      id: 6,
-      name: "Abraham Nindjio",
-      username: "@abraham_nindjio",
-      avatar: "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=150",
-      rating: 5,
-      comment: "Salutations. Je m'adresse aux concepteurs. Je comprends le bien fondé de votre stratégie de sécurité qui est de ne permettre qu'une session par compte.",
-      timeAgo: "25 janvier 2024",
-      verified: false
     }
   ];
+
+  // Get the appropriate language content
+  const getLocalizedComment = (comment) => {
+    const { language } = useLanguage();
+    return comment[`comment_${language}`] || comment[`comment_en`] || comment.comment || '';
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const { language } = useLanguage();
+    return date.toLocaleDateString(language === 'fr' ? 'fr-FR' : 'en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  };
 
   const renderStars = (rating) => {
     return [...Array(5)].map((_, i) => (
@@ -87,6 +91,19 @@ const Comments = () => {
       />
     ));
   };
+
+  if (loading) {
+    return (
+      <section id="comments" className="py-12 sm:py-16 lg:py-20 bg-pink-50">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-pink-200 border-t-pink-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading comments...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="comments" className="py-12 sm:py-16 lg:py-20 bg-pink-50">
@@ -158,7 +175,7 @@ const Comments = () => {
                     {/* User info */}
                     <div className="flex items-center space-x-4 mb-6 relative z-10">
                       <img
-                        src={comment.avatar}
+                        src={comment.avatar_url}
                         alt={comment.name}
                         className="w-12 h-12 sm:w-16 sm:h-16 rounded-full border-4 border-green-100"
                       />
@@ -182,12 +199,12 @@ const Comments = () => {
                     
                     {/* Comment text */}
                     <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-6 relative z-10">
-                      "{comment.comment}"
+                      "{getLocalizedComment(comment)}"
                     </p>
                     
                     {/* Time */}
                     <div className="text-xs sm:text-sm text-gray-500 relative z-10">
-                      {comment.timeAgo}
+                      {formatDate(comment.date)}
                     </div>
                     
                     {/* Gradient overlay */}

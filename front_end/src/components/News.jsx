@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
@@ -6,6 +7,7 @@ import { Calendar, ArrowRight, Zap, Shield, Users, Star } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import AnimatedSection from './AnimatedSection';
 import { useNavigate } from 'react-router-dom';
+import apiService from '../services/api';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -15,61 +17,78 @@ import 'swiper/css/autoplay';
 const News = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const [newsItems, setNewsItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        setLoading(true);
+        const data = await apiService.getAllNews();
+        setNewsItems(data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching news:', err);
+        setError(err.message);
+        // Fallback to static data
+        setNewsItems(fallbackNewsItems);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, []);
   
-  const newsItems = [
+  // Fallback news items for when API is not available
+  const fallbackNewsItems = [
     {
       id: 1,
-      title: "GOV IA : UNE RÉVOLUTION POUR L'ADMINISTRATION PUBLIQUE CAMEROUNAISE",
-      excerpt: "Découvrez comment l'intelligence artificielle transforme les services publics camerounais avec des innovations révolutionnaires.",
-      date: "2025-01-15",
-      category: "Innovation",
+      title_en: "GOV AI: A REVOLUTION FOR CAMEROONIAN PUBLIC ADMINISTRATION",
+      title_fr: "GOV IA : UNE RÉVOLUTION POUR L'ADMINISTRATION PUBLIQUE CAMEROUNAISE",
+      excerpt_en: "Discover how artificial intelligence transforms Cameroonian public services with revolutionary innovations.",
+      excerpt_fr: "Découvrez comment l'intelligence artificielle transforme les services publics camerounais avec des innovations révolutionnaires qui changent la donne pour les citoyens.",
+      publish_date: "2025-01-15",
+      category_en: "Innovation",
+      category_fr: "Innovation",
       icon: <Zap className="w-5 h-5" />,
-      images: [
-        "/GOV AI IMAGE 1.jpg",
-        "/GOV AI IMAGE 2.jpg", 
-        "/GOV AI IMAGE 3.jpg"
-      ],
+      image_url: "/GOV AI IMAGE 1.jpg",
       featured: true,
-      link: "https://impactechosnews.com/sago-2025-le-ministere-des-finances-expose-ses-innovations/"
+      external_link: "https://impactechosnews.com/sago-2025-le-ministere-des-finances-expose-ses-innovations/"
     },
     {
       id: 2,
-      title: t('news.article2.title'),
-      excerpt: t('news.article2.excerpt'),
-      date: "2025-01-10",
-      category: t('news.article2.category'),
+      title_en: "nGomna 3.0: Advanced Security Features",
+      title_fr: "nGomna 3.0 : Nouvelles Fonctionnalités de Sécurité Avancées",
+      excerpt_en: "The latest nGomna update introduces revolutionary security features to protect your personal data.",
+      excerpt_fr: "La dernière mise à jour de nGomna introduit des fonctionnalités de sécurité révolutionnaires pour protéger vos données personnelles.",
+      publish_date: "2025-01-10",
+      category_en: "Security",
+      category_fr: "Sécurité",
       icon: <Shield className="w-5 h-5" />,
-      image: "https://images.pexels.com/photos/60504/security-protection-anti-virus-software-60504.jpeg?auto=compress&cs=tinysrgb&w=600"
+      image_url: "https://images.pexels.com/photos/60504/security-protection-anti-virus-software-60504.jpeg?auto=compress&cs=tinysrgb&w=600"
     },
-    {
-      id: 3,
-      title: t('news.article3.title'),
-      excerpt: t('news.article3.excerpt'),
-      date: "2025-01-05",
-      category: t('news.article3.category'),
-      icon: <Users className="w-5 h-5" />,
-      image: "https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=600"
-    },
-    {
-      id: 4,
-      title: t('news.article4.title'),
-      excerpt: t('news.article4.excerpt'),
-      date: "2025-01-01",
-      category: t('news.article4.category'),
-      icon: <Star className="w-5 h-5" />,
-      image: "https://images.pexels.com/photos/1068523/pexels-photo-1068523.jpeg?auto=compress&cs=tinysrgb&w=600"
-    }
   ];
+
+  // Get the appropriate language content
+  const getLocalizedContent = (item, field) => {
+    const { language } = useLanguage();
+    return item[`${field}_${language}`] || item[`${field}_en`] || item[field] || '';
+  };
 
   const getCategoryColor = (category) => {
     switch (category) {
-      case t('news.article1.category'):
+      case 'Innovation':
         return 'from-green-500 to-emerald-600';
-      case t('news.article2.category'):
+      case 'Security':
+      case 'Sécurité':
         return 'from-emerald-500 to-teal-600';
-      case t('news.article3.category'):
+      case 'Community':
+      case 'Communauté':
         return 'from-yellow-500 to-orange-500';
-      case t('news.article4.category'):
+      case 'Awards':
+      case 'Récompenses':
         return 'from-yellow-400 to-yellow-500';
       default:
         return 'from-gray-500 to-gray-600';
@@ -78,12 +97,32 @@ const News = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
+    const { language } = useLanguage();
+    return date.toLocaleDateString(language === 'fr' ? 'fr-FR' : 'en-US', { 
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 
     });
   };
+
+  const handleNewsClick = (news) => {
+    if (news.external_link) {
+      window.open(news.external_link, '_blank');
+    }
+  };
+
+  if (loading) {
+    return (
+      <section id="news" className="py-12 sm:py-16 lg:py-20 bg-yellow-50">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-yellow-200 border-t-yellow-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading news...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="news" className="py-12 sm:py-16 lg:py-20 bg-yellow-50">
@@ -112,8 +151,10 @@ const News = () => {
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 mb-8 lg:mb-12">
           {/* Featured Article */}
           <AnimatedSection className="lg:col-span-2" direction="up">
+            {newsItems.length > 0 && (
             <motion.article
-              className="group bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500"
+              className="group bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 cursor-pointer"
+              onClick={() => handleNewsClick(newsItems[0])}
               whileHover={{ 
                 scale: 1.02,
                 boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
@@ -122,34 +163,13 @@ const News = () => {
             >
               <div className="lg:flex">
                 <div className="lg:w-1/2 relative overflow-hidden">
-                  <div className="w-full h-48 sm:h-64 lg:h-full">
-                    <Swiper
-                      modules={[Autoplay, Pagination]}
-                      autoplay={{
-                        delay: 5000,
-                        disableOnInteraction: false,
-                      }}
-                      pagination={{
-                        clickable: true,
-                        bulletClass: 'swiper-pagination-bullet news-bullet',
-                        bulletActiveClass: 'swiper-pagination-bullet-active news-bullet-active'
-                      }}
-                      className="w-full h-full"
-                      loop={true}
-                    >
-                      {newsItems[0].images.map((image, index) => (
-                        <SwiperSlide key={index}>
-                          <motion.img
-                            src={image}
-                            alt={`${newsItems[0].title} - Image ${index + 1}`}
-                            className="w-full h-full object-cover"
-                            whileHover={{ scale: 1.1 }}
-                            transition={{ duration: 0.6, ease: "easeOut" }}
-                          />
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
-                  </div>
+                  <motion.img
+                    src={newsItems[0].image_url}
+                    alt={getLocalizedContent(newsItems[0], 'title')}
+                    className="w-full h-48 sm:h-64 lg:h-full object-cover"
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                  />
                   <motion.div 
                     className="absolute top-4 left-4"
                     initial={{ scale: 0, opacity: 0 }}
@@ -172,10 +192,10 @@ const News = () => {
                     viewport={{ once: true }}
                   >
                     <div className={`w-8 h-8 rounded-lg bg-gradient-to-r ${getCategoryColor(newsItems[0].category)} flex items-center justify-center text-white`}>
-                      {newsItems[0].icon}
+                      <Zap className="w-5 h-5" />
                     </div>
                     <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
-                      {newsItems[0].category}
+                      {getLocalizedContent(newsItems[0], 'category')}
                     </span>
                   </motion.div>
                   
@@ -186,7 +206,7 @@ const News = () => {
                     transition={{ duration: 0.5, delay: 0.3 }}
                     viewport={{ once: true }}
                   >
-                    {newsItems[0].title}
+                    {getLocalizedContent(newsItems[0], 'title')}
                   </motion.h3>
                   
                   <motion.p 
@@ -196,7 +216,7 @@ const News = () => {
                     transition={{ duration: 0.5, delay: 0.4 }}
                     viewport={{ once: true }}
                   >
-                    {newsItems[0].excerpt}
+                    {getLocalizedContent(newsItems[0], 'excerpt')}
                   </motion.p>
                   
                   <motion.div 
@@ -208,7 +228,7 @@ const News = () => {
                   >
                     <div className="flex items-center space-x-2 text-gray-500">
                       <Calendar size={16} />
-                      <span className="text-sm">{formatDate(newsItems[0].date)}</span>
+                      <span className="text-sm">{formatDate(newsItems[0].publish_date)}</span>
                     </div>
                     
                     <motion.button 
@@ -229,6 +249,7 @@ const News = () => {
                 </div>
               </div>
             </motion.article>
+            )}
           </AnimatedSection>
         </div>
 
@@ -250,8 +271,8 @@ const News = () => {
               >
                 <div className="relative overflow-hidden">
                   <motion.img
-                    src={item.image}
-                    alt={item.title}
+                    src={item.image_url}
+                    alt={getLocalizedContent(item, 'title')}
                     className="w-full h-40 sm:h-48 object-cover"
                     whileHover={{ scale: 1.1 }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
@@ -270,10 +291,10 @@ const News = () => {
                     viewport={{ once: true }}
                   >
                     <div className={`w-6 h-6 rounded-md bg-gradient-to-r ${getCategoryColor(item.category)} flex items-center justify-center text-white`}>
-                      {item.icon}
+                      <Shield className="w-4 h-4" />
                     </div>
                     <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                      {item.category}
+                      {getLocalizedContent(item, 'category')}
                     </span>
                   </motion.div>
                   
@@ -284,7 +305,7 @@ const News = () => {
                     transition={{ duration: 0.3, delay: 0.2 }}
                     viewport={{ once: true }}
                   >
-                    {item.title}
+                    {getLocalizedContent(item, 'title')}
                   </motion.h3>
                   
                   <motion.p 
@@ -294,7 +315,7 @@ const News = () => {
                     transition={{ duration: 0.3, delay: 0.3 }}
                     viewport={{ once: true }}
                   >
-                    {item.excerpt}
+                    {getLocalizedContent(item, 'excerpt')}
                   </motion.p>
                   
                   <motion.div 
@@ -306,7 +327,7 @@ const News = () => {
                   >
                     <div className="flex items-center space-x-2 text-gray-500">
                       <Calendar size={14} />
-                      <span className="text-xs sm:text-sm">{formatDate(item.date)}</span>
+                      <span className="text-xs sm:text-sm">{formatDate(item.publish_date)}</span>
                     </div>
                     
                     <motion.button 
