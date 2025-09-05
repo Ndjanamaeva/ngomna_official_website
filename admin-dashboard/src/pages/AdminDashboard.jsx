@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import apiService from '../services/api';
-import { useMenus, usePages, useTextContent } from '../hooks/useApi';
+import apiService from '../../front_end/src/services/api';
 import { 
   LayoutDashboard, 
   Users, 
@@ -47,58 +46,80 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedPage, setSelectedPage] = useState(null);
-  const [selectedSection, setSelectedSection] = useState('hero');
+  const [selectedPageId, setSelectedPageId] = useState(null);
+  const [selectedSectionId, setSelectedSectionId] = useState(null);
   const [contentType, setContentType] = useState('text');
   const [previewMode, setPreviewMode] = useState('desktop');
   const [isEditing, setIsEditing] = useState(false);
   const [editingContent, setEditingContent] = useState('');
   const [apiError, setApiError] = useState(null);
   const [saveStatus, setSaveStatus] = useState(null);
+  
+  // Data states
+  const [pagesWithContent, setPagesWithContent] = useState([]);
+  const [selectedPageData, setSelectedPageData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [newsItems, setNewsItems] = useState([]);
+  const [comments, setComments] = useState([]);
 
-  // API hooks
-  const { data: menus, loading: menusLoading, error: menusError } = useMenus();
-  const { data: pages, loading: pagesLoading, error: pagesError } = usePages();
-  const { data: textContent, loading: textLoading, error: textError, execute: fetchTextContent } = useTextContent();
+  // Fetch all data on component mount
+  useEffect(() => {
+    fetchAllData();
+  }, []);
 
-  // Mock content data structure
-  const [websiteContent, setWebsiteContent] = useState({
-    home: {
-      hero: {
-        title: 'Experience the nGomna Revolution',
-        subtitle: 'Transform your mobile experience with our cutting-edge application.',
-        buttonText: 'Download Now',
-        backgroundImage: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg'
-      },
-      features: {
-        title: 'Why Choose nGomna?',
-        subtitle: 'Discover the powerful features that make nGomna special.',
-        items: [
-          { title: 'Lightning Fast', description: 'Experience unprecedented speed' },
-          { title: 'Secure & Private', description: 'Your data is protected' }
-        ]
-      },
-      news: {
-        title: 'Latest News & Updates',
-        subtitle: 'Stay up to date with the latest developments'
+  const fetchAllData = async () => {
+    try {
+      setLoading(true);
+      setApiError(null);
+      
+      // Fetch pages with content
+      const pagesData = await apiService.getAllPagesWithContent();
+      setPagesWithContent(pagesData);
+      
+      // Set initial selected page
+      if (pagesData.length > 0 && !selectedPageId) {
+        setSelectedPageId(pagesData[0].id);
+        setSelectedPageData(pagesData[0]);
+        if (pagesData[0].sections && pagesData[0].sections.length > 0) {
+          setSelectedSectionId(pagesData[0].sections[0].id);
+        }
       }
-    },
-    payslips: {
-      hero: {
-        title: 'Payslips Management',
-        subtitle: 'Access, download, and manage your monthly payslips with ease.',
-        buttonText: 'Access My Payslips'
-      }
-    },
-    header: {
-      logo: '/ngomna_logo.png',
-      navigation: ['Features', 'News', 'Reviews', 'FAQ', 'Screenshots', 'Contact']
-    },
-    footer: {
-      description: 'Experience the future of mobile applications with nGomna.',
-      copyright: '© 2025 nGomna. All rights reserved.'
+      
+      // Fetch news and comments
+      const [newsData, commentsData] = await Promise.all([
+        apiService.getAllNews(),
+        apiService.getAllComments()
+      ]);
+      
+      setNewsItems(newsData);
+      setComments(commentsData);
+      
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setApiError(error.message);
+    } finally {
+      setLoading(false);
     }
-  });
+  };
+
+  const handlePageSelect = async (pageId) => {
+    try {
+      setSelectedPageId(pageId);
+      setLoading(true);
+      
+      const pageData = await apiService.getPageWithContent(pageId);
+      setSelectedPageData(pageData);
+      
+      if (pageData.sections && pageData.sections.length > 0) {
+        setSelectedSectionId(pageData.sections[0].id);
+      }
+    } catch (error) {
+      console.error('Error fetching page data:', error);
+      setApiError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const sidebarItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
@@ -109,9 +130,9 @@ const AdminDashboard = () => {
     { id: 'settings', label: 'Settings', icon: <Settings size={20} /> },
   ];
 
-  // Icon mapping for dynamic pages
   const getPageIcon = (pageName) => {
     const iconMap = {
+      'Home': <Home size={16} />,
       'Payslips': <FileText size={16} />,
       'Information': <Globe size={16} />,
       'Notifications': <Bell size={16} />,
@@ -121,6 +142,7 @@ const AdminDashboard = () => {
       'Security': <Shield size={16} />,
       'OTP': <Shield size={16} />,
       'DGI': <FileText size={16} />,
+      'GOV-AI': <Bot size={16} />,
       'Mission': <Globe size={16} />,
       'Vision': <Globe size={16} />,
       'Perspectives': <Globe size={16} />,
@@ -131,99 +153,27 @@ const AdminDashboard = () => {
     return iconMap[pageName] || <FileText size={16} />;
   };
 
-  // Fallback page list for when API is not available (only actual pages from backend)
-  const fallbackPageList = [
-    { id: 'home', label: 'Home Page', icon: <Home size={16} /> },
-    { id: 'payslips', label: 'Payslips', icon: <FileText size={16} /> },
-    { id: 'information', label: 'Information', icon: <Globe size={16} /> },
-    { id: 'notifications', label: 'Notifications', icon: <Bell size={16} /> },
-    { id: 'census', label: 'Census', icon: <Users size={16} /> },
-    { id: 'messaging', label: 'Messaging', icon: <MessageSquare size={16} /> },
-    { id: 'children', label: 'Children', icon: <Users size={16} /> },
-    { id: 'security', label: 'Security', icon: <Shield size={16} /> },
-    { id: 'otp', label: 'OTP', icon: <Shield size={16} /> },
-    { id: 'dgi', label: 'DGI', icon: <FileText size={16} /> },
-    { id: 'gov-ai', label: 'GOV-AI', icon: <MessageSquare size={16} /> },
-    { id: 'mission', label: 'Mission', icon: <Globe size={16} /> },
-    { id: 'vision', label: 'Vision', icon: <Globe size={16} /> },
-    { id: 'perspectives', label: 'Perspectives', icon: <Globe size={16} /> },
-    { id: 'whatsapp', label: 'WhatsApp', icon: <MessageSquare size={16} /> },
-    { id: 'email', label: 'Email', icon: <MessageSquare size={16} /> },
-    { id: 'facebook', label: 'Facebook', icon: <MessageSquare size={16} /> }
-  ];
-
-  // Transform API pages to match the expected format
-  const dynamicPages = pages ? pages.map(page => ({
-    id: page.id,
-    label: page.name,
-    icon: getPageIcon(page.name),
-    url: page.url
-  })) : fallbackPageList;
-
-  const getSectionsForPage = (pageId) => {
-    // Map page IDs to their sections (only actual pages, no header/footer)
-    const sections = {
-      // Home page (special case)
-      'home': ['hero', 'features', 'screenshots', 'news', 'comments', 'faq', 'download'],
-      // Dynamic pages from API - using page names as keys
-      'Payslips': ['hero', 'features', 'benefits', 'cta'],
-      'Information': ['hero', 'features', 'types', 'cta'],
-      'Notifications': ['hero', 'features', 'types', 'cta'],
-      'Census': ['hero', 'features', 'services', 'cta'],
-      'Messaging': ['hero', 'features', 'capabilities', 'cta'],
-      'Children': ['hero', 'features', 'services', 'cta'],
-      'Security': ['hero', 'features', 'protection', 'cta'],
-      'OTP': ['hero', 'features', 'security', 'cta'],
-      'DGI': ['hero', 'features', 'services', 'cta'],
-      'GOV-AI': ['hero', 'features', 'capabilities', 'cta'],
-      'Mission': ['hero', 'features', 'content', 'cta'],
-      'Vision': ['hero', 'features', 'content', 'cta'],
-      'Perspectives': ['hero', 'features', 'content', 'cta'],
-      'WhatsApp': ['hero', 'features', 'integration', 'cta'],
-      'Email': ['hero', 'features', 'integration', 'cta'],
-      'Facebook': ['hero', 'features', 'integration', 'cta'],
-      // Legacy support for old IDs
-      'payslips': ['hero', 'features', 'benefits', 'cta'],
-      'information': ['hero', 'features', 'types', 'cta'],
-      'notifications': ['hero', 'features', 'types', 'cta'],
-      'census': ['hero', 'features', 'services', 'cta'],
-      'messaging': ['hero', 'features', 'capabilities', 'cta'],
-      'children': ['hero', 'features', 'services', 'cta'],
-      'security': ['hero', 'features', 'protection', 'cta'],
-      'otp': ['hero', 'features', 'security', 'cta'],
-      'dgi': ['hero', 'features', 'services', 'cta'],
-      'gov-ai': ['hero', 'features', 'capabilities', 'cta'],
-      'mission': ['hero', 'features', 'content', 'cta'],
-      'vision': ['hero', 'features', 'content', 'cta'],
-      'perspectives': ['hero', 'features', 'content', 'cta'],
-      'whatsapp': ['hero', 'features', 'integration', 'cta'],
-      'email': ['hero', 'features', 'integration', 'cta'],
-      'facebook': ['hero', 'features', 'integration', 'cta']
-    };
-    return sections[pageId] || ['hero'];
-  };
-
   const stats = [
     { 
       title: 'Total Pages', 
-      value: pages ? pages.length.toString() : fallbackPageList.length.toString(), 
-      change: pagesLoading ? 'Loading...' : 'From API', 
+      value: pagesWithContent.length.toString(), 
+      change: loading ? 'Loading...' : 'From API', 
       trend: 'up',
       icon: <FileText className="w-6 h-6" />,
       color: 'from-blue-500 to-blue-600'
     },
     { 
-      title: 'Menus', 
-      value: menus ? menus.length.toString() : '0', 
-      change: menusLoading ? 'Loading...' : 'From API', 
+      title: 'News Items', 
+      value: newsItems.length.toString(), 
+      change: loading ? 'Loading...' : 'From API', 
       trend: 'up',
       icon: <Type className="w-6 h-6" />,
       color: 'from-green-500 to-green-600'
     },
     { 
-      title: 'Content Items', 
-      value: textContent ? '1' : '0', 
-      change: textLoading ? 'Loading...' : 'Current page', 
+      title: 'Comments', 
+      value: comments.length.toString(), 
+      change: loading ? 'Loading...' : 'From API', 
       trend: 'up',
       icon: <Image className="w-6 h-6" />,
       color: 'from-purple-500 to-purple-600'
@@ -238,16 +188,29 @@ const AdminDashboard = () => {
     },
   ];
 
-  const handleContentSave = async (contentData) => {
+  const handleContentSave = async (contentData, contentId = null) => {
     try {
       setSaveStatus('saving');
       setApiError(null);
       
-      // Update text content via API
-      await apiService.updateTextByPageId(selectedPage, contentData);
+      if (contentId) {
+        // Update existing content
+        await apiService.updateContent(contentId, contentData);
+      } else {
+        // Create new content
+        await apiService.createContent({
+          ...contentData,
+          sectionId: selectedSectionId
+        });
+      }
       
       setSaveStatus('saved');
       setIsEditing(false);
+      
+      // Refresh page data
+      if (selectedPageId) {
+        await handlePageSelect(selectedPageId);
+      }
       
       // Clear success message after 3 seconds
       setTimeout(() => setSaveStatus(null), 3000);
@@ -257,25 +220,62 @@ const AdminDashboard = () => {
     }
   };
 
-  const handlePageSelect = async (pageId) => {
-    setSelectedPage(pageId);
-    setSelectedSection(getSectionsForPage(pageId)[0]);
-    
-    // Fetch content for the selected page
+  const handleDeleteContent = async (contentId) => {
     try {
-      await fetchTextContent(pageId);
+      setSaveStatus('deleting');
+      await apiService.deleteContent(contentId);
+      setSaveStatus('deleted');
+      
+      // Refresh page data
+      if (selectedPageId) {
+        await handlePageSelect(selectedPageId);
+      }
+      
+      setTimeout(() => setSaveStatus(null), 3000);
     } catch (error) {
-      console.error('Error fetching page content:', error);
+      setApiError(error.message);
+      setSaveStatus('error');
     }
   };
 
-  // Initialize selected page when pages are loaded
-  useEffect(() => {
-    if (dynamicPages && dynamicPages.length > 0 && selectedPage === null) {
-      setSelectedPage(dynamicPages[0].id);
-      setSelectedSection(getSectionsForPage(dynamicPages[0].id)[0]);
+  const getCurrentSectionContent = () => {
+    if (!selectedPageData || !selectedSectionId) return [];
+    
+    const section = selectedPageData.sections?.find(s => s.id === selectedSectionId);
+    return section?.contents || [];
+  };
+
+  const getCurrentSection = () => {
+    if (!selectedPageData || !selectedSectionId) return null;
+    
+    return selectedPageData.sections?.find(s => s.id === selectedSectionId);
+  };
+
+  const handleCreateNews = async (newsData) => {
+    try {
+      setSaveStatus('saving');
+      await apiService.createNews(newsData);
+      setSaveStatus('saved');
+      await fetchAllData(); // Refresh data
+      setTimeout(() => setSaveStatus(null), 3000);
+    } catch (error) {
+      setApiError(error.message);
+      setSaveStatus('error');
     }
-  }, [dynamicPages, selectedPage]);
+  };
+
+  const handleCreateComment = async (commentData) => {
+    try {
+      setSaveStatus('saving');
+      await apiService.createComment(commentData);
+      setSaveStatus('saved');
+      await fetchAllData(); // Refresh data
+      setTimeout(() => setSaveStatus(null), 3000);
+    } catch (error) {
+      setApiError(error.message);
+      setSaveStatus('error');
+    }
+  };
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -418,23 +418,23 @@ const AdminDashboard = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Select Page</h3>
             <div className="space-y-2 max-h-64 overflow-y-auto">
-              {pagesLoading ? (
+              {loading ? (
                 <div className="text-center py-4 text-gray-500">Loading pages...</div>
-              ) : pagesError ? (
-                <div className="text-center py-4 text-red-500">Error loading pages: {pagesError}</div>
-              ) : dynamicPages && dynamicPages.length > 0 ? (
-                dynamicPages.map((page) => (
+              ) : apiError ? (
+                <div className="text-center py-4 text-red-500">Error loading pages: {apiError}</div>
+              ) : pagesWithContent && pagesWithContent.length > 0 ? (
+                pagesWithContent.map((page) => (
                   <button
                     key={page.id}
                     onClick={() => handlePageSelect(page.id)}
                     className={`w-full flex items-center space-x-3 p-3 rounded-lg text-left transition-colors ${
-                      selectedPage === page.id 
+                      selectedPageId === page.id 
                         ? 'bg-blue-50 text-blue-600 border border-blue-200' 
                         : 'hover:bg-gray-50 text-gray-700'
                     }`}
                   >
-                    {page.icon}
-                    <span className="font-medium">{page.label}</span>
+                    {getPageIcon(page.name)}
+                    <span className="font-medium">{page.name}</span>
                   </button>
                 ))
               ) : (
@@ -446,20 +446,20 @@ const AdminDashboard = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Select Section</h3>
             <div className="space-y-2">
-              {getSectionsForPage(selectedPage).map((section) => (
+              {selectedPageData?.sections?.map((section) => (
                 <button
-                  key={section}
-                  onClick={() => setSelectedSection(section)}
+                  key={section.id}
+                  onClick={() => setSelectedSectionId(section.id)}
                   className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${
-                    selectedSection === section 
+                    selectedSectionId === section.id 
                       ? 'bg-green-50 text-green-600 border border-green-200' 
                       : 'hover:bg-gray-50 text-gray-700'
                   }`}
                 >
-                  <span className="font-medium capitalize">{section}</span>
+                  <span className="font-medium capitalize">{section.name}</span>
                   <ChevronRight size={16} />
                 </button>
-              ))}
+              )) || <div className="text-center py-4 text-gray-500">No sections found</div>}
             </div>
           </div>
         </div>
@@ -469,7 +469,7 @@ const AdminDashboard = () => {
           <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold text-gray-900">
-                Edit {selectedPage || 'Select a page'} - {selectedSection}
+                Edit {selectedPageData?.name || 'Select a page'} - {getCurrentSection()?.name || 'Select a section'}
               </h3>
               <div className="flex items-center space-x-2">
                 <button
@@ -495,40 +495,155 @@ const AdminDashboard = () => {
 
             {contentType === 'text' && (
               <div className="space-y-4">
-                {textLoading ? (
+                {loading ? (
                   <div className="text-center py-8 text-gray-500">Loading content...</div>
-                ) : textError ? (
-                  <div className="text-center py-8 text-red-500">Error loading content: {textError}</div>
+                ) : apiError ? (
+                  <div className="text-center py-8 text-red-500">Error loading content: {apiError}</div>
                 ) : (
-                  <>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
-                      <input
-                        type="text"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="Enter title..."
-                        defaultValue={textContent?.title || websiteContent[selectedPage]?.[selectedSection]?.title || ''}
-                      />
+                  <div className="space-y-6">
+                    <h4 className="text-lg font-semibold text-gray-900">Current Content</h4>
+                    {getCurrentSectionContent().length > 0 ? (
+                      getCurrentSectionContent().map((content, index) => (
+                        <div key={content.id} className="border border-gray-200 rounded-lg p-4">
+                          <div className="flex justify-between items-start mb-3">
+                            <span className="text-sm font-medium text-gray-500">Content #{index + 1}</span>
+                            <button
+                              onClick={() => handleDeleteContent(content.id)}
+                              className="text-red-600 hover:text-red-700"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Title (EN)</label>
+                              <input
+                                type="text"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                defaultValue={content.title_en || ''}
+                                onChange={(e) => {
+                                  // Handle content update
+                                  const updatedContent = { ...content, title_en: e.target.value };
+                                  handleContentSave(updatedContent, content.id);
+                                }}
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Title (FR)</label>
+                              <input
+                                type="text"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                defaultValue={content.title_fr || ''}
+                                onChange={(e) => {
+                                  const updatedContent = { ...content, title_fr: e.target.value };
+                                  handleContentSave(updatedContent, content.id);
+                                }}
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Content (EN)</label>
+                              <textarea
+                                rows={3}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                defaultValue={content.content_en || ''}
+                                onChange={(e) => {
+                                  const updatedContent = { ...content, content_en: e.target.value };
+                                  handleContentSave(updatedContent, content.id);
+                                }}
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Content (FR)</label>
+                              <textarea
+                                rows={3}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                defaultValue={content.content_fr || ''}
+                                onChange={(e) => {
+                                  const updatedContent = { ...content, content_fr: e.target.value };
+                                  handleContentSave(updatedContent, content.id);
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-8 text-gray-500">
+                        No content found for this section
+                      </div>
+                    )}
+                    
+                    {/* Add new content form */}
+                    <div className="border-t pt-6">
+                      <h4 className="text-lg font-semibold text-gray-900 mb-4">Add New Content</h4>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Title (EN)</label>
+                          <input
+                            type="text"
+                            id="new-title-en"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Enter English title..."
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Title (FR)</label>
+                          <input
+                            type="text"
+                            id="new-title-fr"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Enter French title..."
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Content (EN)</label>
+                          <textarea
+                            rows={4}
+                            id="new-content-en"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Enter English content..."
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Content (FR)</label>
+                          <textarea
+                            rows={4}
+                            id="new-content-fr"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Enter French content..."
+                          />
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => {
+                          const titleEn = document.getElementById('new-title-en').value;
+                          const titleFr = document.getElementById('new-title-fr').value;
+                          const contentEn = document.getElementById('new-content-en').value;
+                          const contentFr = document.getElementById('new-content-fr').value;
+                          
+                          if (titleEn || titleFr || contentEn || contentFr) {
+                            handleContentSave({
+                              type: 'text',
+                              title_en: titleEn,
+                              title_fr: titleFr,
+                              content_en: contentEn,
+                              content_fr: contentFr,
+                              order: getCurrentSectionContent().length
+                            });
+                            
+                            // Clear form
+                            document.getElementById('new-title-en').value = '';
+                            document.getElementById('new-title-fr').value = '';
+                            document.getElementById('new-content-en').value = '';
+                            document.getElementById('new-content-fr').value = '';
+                          }
+                        }}
+                        className="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                      >
+                        Add Content
+                      </button>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
-                      <textarea
-                        rows={6}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="Enter content..."
-                        defaultValue={textContent?.content || websiteContent[selectedPage]?.[selectedSection]?.description || ''}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Page ID</label>
-                      <input
-                        type="text"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50"
-                        value={selectedPage || ''}
-                        readOnly
-                      />
-                    </div>
-                  </>
+                  </div>
                 )}
               </div>
             )}
@@ -630,18 +745,25 @@ const AdminDashboard = () => {
             }`}>
               <div className="bg-gray-50 p-4 min-h-64">
                 <div className="bg-white rounded-lg p-4 shadow-sm">
-                  <h4 className="font-semibold text-gray-900 mb-2">
-                    {textContent?.title || websiteContent[selectedPage]?.[selectedSection]?.title || 'Sample Title'}
-                  </h4>
-                  <p className="text-gray-600 text-sm mb-3">
-                    {textContent?.content || websiteContent[selectedPage]?.[selectedSection]?.subtitle || 'Sample content text'}
-                  </p>
-                  <div className="text-xs text-gray-500 mb-2">
-                    Page: {selectedPage || 'None'} | Section: {selectedSection}
-                  </div>
-                  <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
-                    {websiteContent[selectedPage]?.[selectedSection]?.buttonText || 'Button'}
-                  </button>
+                  {getCurrentSectionContent().length > 0 ? (
+                    getCurrentSectionContent().map((content, index) => (
+                      <div key={content.id} className="mb-4 last:mb-0">
+                        <h4 className="font-semibold text-gray-900 mb-2">
+                          {content.title_en || 'Sample Title'}
+                        </h4>
+                        <p className="text-gray-600 text-sm mb-3">
+                          {content.content_en || 'Sample content text'}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      <p>No content to preview</p>
+                      <p className="text-xs mt-2">
+                        Page: {selectedPageData?.name || 'None'} | Section: {getCurrentSection()?.name || 'None'}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -852,7 +974,7 @@ const AdminDashboard = () => {
         {/* Page Content */}
         <main className="p-6">
           {/* Connection Status Banner */}
-          {(apiError || menusError || pagesError) && (
+          {apiError && (
             <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
               <div className="flex items-center space-x-2">
                 <div className="w-2 h-2 bg-red-500 rounded-full"></div>
@@ -861,8 +983,6 @@ const AdminDashboard = () => {
               <p className="text-red-600 text-sm mt-1">
                 Make sure the backend server is running on port 5000. 
                 {apiError && ` Error: ${apiError}`}
-                {menusError && ` Menus Error: ${menusError}`}
-                {pagesError && ` Pages Error: ${pagesError}`}
               </p>
             </div>
           )}
