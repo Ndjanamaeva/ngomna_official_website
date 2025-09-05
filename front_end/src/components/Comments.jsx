@@ -1,10 +1,12 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Star, Quote } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import AnimatedSection from './AnimatedSection';
+import apiService from '../services/api';
 import apiService from '../services/api';
 
 // Import Swiper styles
@@ -40,32 +42,34 @@ const Comments = () => {
 
     fetchComments();
   }, []);
-  
-  // Fallback comments for when API is not available
-  const fallbackComments = [
-    {
-      id: 1,
-      name: "Vladimir Cruise",
-      username: "@vladimir_cruise",
-      avatar_url: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150",
-      rating: 5,
-      comment_en: "This application is very useful for users as it facilitates access to their payslip regardless of where they are and thus prevents being extorted 1000F outside MINFI.",
-      comment_fr: "Cette application est très utile pour les usagers car elle facilite l'accès à son bulletin de solde peu importe l'endroit où on se trouve et empêche ainsi de se faire extorquer 1000F à l'extérieur du MINFI.",
-      date: "2025-07-14",
-      verified: true
-    },
-    {
-      id: 2,
-      name: "Freddy Djilo",
-      username: "@freddy_djilo",
-      avatar_url: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150",
-      rating: 5,
-      comment_en: "Hello, dear developers. Your application is a saving solution for users. We (I) recommend it whenever we have the opportunity.",
-      comment_fr: "Bonjour, chers développeurs. Votre application est une solution salvatrice pour les utilisateurs. Nous (je) la recommandons dès que nous en avons l'occasion.",
-      date: "2024-03-30",
-      verified: true
+  const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        setLoading(true);
+        const data = await apiService.getAllComments();
+        setComments(data);
     }
   ];
+
+  // Get the appropriate language content
+  const getLocalizedComment = (comment) => {
+    const { language } = useLanguage();
+    return comment[`comment_${language}`] || comment[`comment_en`] || comment.comment || '';
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const { language } = useLanguage();
+    return date.toLocaleDateString(language === 'fr' ? 'fr-FR' : 'en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  };
 
   // Get the appropriate language content
   const getLocalizedComment = (comment) => {
@@ -91,6 +95,19 @@ const Comments = () => {
       />
     ));
   };
+
+  if (loading) {
+    return (
+      <section id="comments" className="py-12 sm:py-16 lg:py-20 bg-pink-50">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-pink-200 border-t-pink-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading comments...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   if (loading) {
     return (
