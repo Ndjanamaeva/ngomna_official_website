@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Smartphone, ChevronDown, FileText, Info, Bell, Users, MessageCircle, Baby, Shield, Key, Building, Bot } from 'lucide-react';
@@ -13,18 +14,59 @@ const Header = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
 
-  const features = [
-    { name: t('features.payslips'), icon: <FileText size={16} />, href: '/payslips' },
-    { name: t('features.information'), icon: <Info size={16} />, href: '/information' },
-    { name: t('features.notifications'), icon: <Bell size={16} />, href: '/notifications' },
-    { name: t('features.census'), icon: <Users size={16} />, href: '/census' },
-    { name: t('features.messaging'), icon: <MessageCircle size={16} />, href: '/messaging' },
-    { name: t('features.children'), icon: <Baby size={16} />, href: '/children' },
-    { name: t('features.security'), icon: <Shield size={16} />, href: '/security' },
-    { name: t('features.otp'), icon: <Key size={16} />, href: '/otp' },
-    { name: t('features.dgi'), icon: <Building size={16} />, href: '/dgi' },
-    { name: t('features.govai'), icon: <Bot size={16} />, href: '/gov-ai' }
-  ];
+  // Static icon map for known feature slugs/labels
+  const iconMap = {
+    payslips: <FileText size={16} />,
+    information: <Info size={16} />,
+    notifications: <Bell size={16} />,
+    census: <Users size={16} />,
+    messaging: <MessageCircle size={16} />,
+    children: <Baby size={16} />,
+    security: <Shield size={16} />,
+    otp: <Key size={16} />,
+    dgi: <Building size={16} />,
+    'gov-ai': <Bot size={16} />,
+  };
+
+  const [features, setFeatures] = useState([]); // will hold fetched feature menu items
+
+  // Fetch menu items for a given menuId
+  const fetchMenuItems = useCallback(async (menuId) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/menuitems/${menuId}`);
+      // Set menu items with the correct label and link
+      setFeatures(response.data.map(item => ({
+        id: item.id,
+        label: item.label,
+        link: item.url,  // Make sure this matches the URL field from the database
+        icon: iconMap[item.url.replace(/^\//, '').toLowerCase()] || iconMap[item.label.toLowerCase()] || <FileText size={16} />
+      })));
+    } catch (error) {
+      console.error('Failed to fetch menu items:', error);
+    }
+  }, []);
+
+  // Fetch menus and select the 'features' menu to load its menu items
+  useEffect(() => {
+    const fetchMenus = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/menus');
+        const menus = res.data;
+        // Find the features menu by title (created as 'features' in backend seed)
+        const featuresMenu = menus.find(m => m.title && m.title.toLowerCase() === 'features');
+        if (featuresMenu) {
+          fetchMenuItems(featuresMenu.id);
+        } else if (menus.length > 0) {
+          // fallback to first menu
+          fetchMenuItems(menus[0].id);
+        }
+      } catch (err) {
+        console.error('Failed to fetch menus:', err);
+      }
+    };
+
+    fetchMenus();
+  }, [fetchMenuItems]);
 
   const handleSectionNavigation = (sectionId) => {
     navigate('/');
@@ -94,15 +136,15 @@ const Header = () => {
                   <div className="py-2">
                     {features.map((feature, index) => (
                       <Link
-                        key={index}
-                        to={feature.href}
+                        key={feature.id || index}
+                        to={feature.link}
                         className="flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors group"
                         onClick={() => setIsDropdownOpen(false)}
                       >
                         <div className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-green-100 flex items-center justify-center text-gray-600 group-hover:text-green-600 transition-colors">
                           {feature.icon}
                         </div>
-                        <span className="font-medium">{feature.name}</span>
+                        <span className="font-medium">{feature.label}</span>
                       </Link>
                     ))}
                   </div>
@@ -176,8 +218,8 @@ const Header = () => {
                   >
                     {features.map((feature, index) => (
                       <Link
-                        key={index}
-                        to={feature.href}
+                        key={feature.id || index}
+                        to={feature.link}
                         className="flex items-center space-x-3 py-2 px-4 text-gray-700 hover:text-green-600 hover:bg-green-50 transition-colors"
                         onClick={() => {
                           setIsMenuOpen(false);
@@ -187,7 +229,7 @@ const Header = () => {
                         <div className="w-6 h-6 rounded-md bg-gray-100 flex items-center justify-center text-gray-600">
                           {feature.icon}
                         </div>
-                        <span className="text-sm">{feature.name}</span>
+                        <span className="text-sm">{feature.label}</span>
                       </Link>
                     ))}
                   </motion.div>
