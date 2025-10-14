@@ -8,9 +8,11 @@ const Hero = () => {
   const { t } = useLanguage();
   const [dbTitle, setDbTitle] = useState('');
   const [dbContent, setDbContent] = useState('');
+  const [dbLoading, setDbLoading] = useState(true);
 
   useEffect(() => {
     const fetchHeroText = async () => {
+      setDbLoading(true);
       try {
         const res = await axios.get('http://localhost:5000/api/text/page/1/section/2');
         if (res && res.data) {
@@ -19,6 +21,8 @@ const Hero = () => {
         }
       } catch (err) {
         console.warn('Could not fetch hero text from backend', err);
+      } finally {
+        setDbLoading(false);
       }
     };
 
@@ -169,7 +173,15 @@ const Hero = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            {dbTitle || t('hero.title')}
+            <span className="inline-flex items-center">
+              {dbTitle || t('hero.title')}
+              {dbLoading && (
+                <svg className="animate-spin ml-3 h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                </svg>
+              )}
+            </span>
           </motion.h1>
           
           <motion.p
@@ -179,7 +191,15 @@ const Hero = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
           >
-            {dbContent || t('hero.subtitle')}
+            <span className="inline-flex items-center">
+              {dbContent || t('hero.subtitle')}
+              {dbLoading && (
+                <svg className="animate-spin ml-3 h-4 w-4 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                </svg>
+              )}
+            </span>
           </motion.p>
           
           <motion.div 
