@@ -5,7 +5,7 @@ const router = express.Router();
 const menuController = require('../controllers/menuController');
 const linkController = require('../controllers/linkController');
 const pageController = require('../controllers/pageController');
-const mediaController = require('../controllers/mediaController'); // Import the text controller
+const textController = require('../controllers/textController'); // Import the text controller
 const imageController = require('../controllers/imageController');
 
 // Route to get all menus
@@ -30,8 +30,10 @@ router.get('/api/pages', pageController.getPages);
 router.put('/api/:pageId', pageController.updatePage);
 
 // Text Routes
-router.get('/api/text/:pageId', mediaController.getTextByPageId); // Add this route
-router.put('/api/text/:pageId', mediaController.updateTextByPageId); // Add this route for updating text
+router.get('/api/text/:pageId', textController.getTextByPageId); // Add this route
+router.get('/api/text/page/:pageId/section/:section', textController.getTextByPageAndSection); // Get text by page and section
+router.get('/api/text/id/:id', textController.getTextById); // Get text by id
+router.put('/api/text/:pageId', textController.updateTextByPageId); // Add this route for updating text
 
 // Image Routes
 router.get('/api/images/name/:name', imageController.getImageByName);
