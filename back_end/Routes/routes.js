@@ -35,5 +35,6 @@ router.put('/api/text/:pageId', mediaController.updateTextByPageId); // Add this
 
 // Image Routes
 router.get('/api/images/name/:name', imageController.getImageByName);
+router.get('/api/images/:id', imageController.getImageById);
 
 module.exports = router;

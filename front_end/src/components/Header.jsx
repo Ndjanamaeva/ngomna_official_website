@@ -16,7 +16,7 @@ const Header = () => {
   const [allLinks, setAllLinks] = useState([]);
   const [loadingLinks, setLoadingLinks] = useState(true);
   const [linksValid, setLinksValid] = useState(false);
-  const [logoUrl, setLogoUrl] = useState('/ngomna_logo.png');
+  const [logoUrl, setLogoUrl] = useState('');
   const [logoLoading, setLogoLoading] = useState(true);
   const [logoFetchedFromBackend, setLogoFetchedFromBackend] = useState(false);
   const [logoLoaded, setLogoLoaded] = useState(false);
@@ -57,21 +57,23 @@ const Header = () => {
     fetchLinkById(1);
   }, [fetchLinkById]);
 
-  // Fetch logo image url from backend by name 'ngomna_logo'
+  // Fetch logo image by id (strictly from backend)
   useEffect(() => {
     const fetchLogo = async () => {
       setLogoLoading(true);
       try {
-        const res = await axios.get('http://localhost:5000/api/images/name/ngomna_logo');
+        const res = await axios.get('http://localhost:5000/api/images/1');
         if (res && res.data && res.data.url) {
           setLogoUrl(res.data.url);
           setLogoFetchedFromBackend(true);
+        } else {
+          // If backend didn't return url, mark as not fetched
+          setLogoFetchedFromBackend(false);
         }
       } catch (err) {
-        console.warn('Could not fetch logo from backend, using local fallback', err);
+        console.warn('Could not fetch logo by id from backend', err);
         setLogoFetchedFromBackend(false);
       } finally {
-        // leave logoLoaded false until <img> onLoad fires
         setLogoLoading(false);
       }
     };

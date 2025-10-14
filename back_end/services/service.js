@@ -1,6 +1,6 @@
 //service.js
 
-const { MenuItem, Link, Page, Menu } = require('../config/Database');
+const { MenuItem, Link, Page, Menu, Image } = require('../config/Database');
 
 
 // Get all menus
@@ -225,6 +225,17 @@ exports.getImageByName = async (name) => {
     return image;
   } catch (error) {
     console.error('Error fetching image by name:', error);
+    throw new Error('Failed to fetch image');
+  }
+};
+
+// Get image by id
+exports.getImageById = async (id) => {
+  try {
+    const image = await Image.findByPk(id);
+    return image;
+  } catch (error) {
+    console.error('Error fetching image by id:', error);
     throw new Error('Failed to fetch image');
   }
 };
