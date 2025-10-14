@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Download, Play, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import axios from 'axios';
 
 const Hero = () => {
   const { t } = useLanguage();
-  const [heroTitle, setHeroTitle] = useState('');
-  const [heroSubtitle, setHeroSubtitle] = useState('');
+  const [dbTitle, setDbTitle] = useState('');
+  const [dbContent, setDbContent] = useState('');
 
   useEffect(() => {
     const fetchHeroText = async () => {
       try {
         const res = await axios.get('http://localhost:5000/api/text/page/1/section/2');
         if (res && res.data) {
-          setHeroTitle(res.data.title || '');
-          setHeroSubtitle(res.data.content || '');
+          setDbTitle(res.data.title || '');
+          setDbContent(res.data.content || '');
         }
       } catch (err) {
-        console.warn('Could not fetch hero text:', err);
+        console.warn('Could not fetch hero text from backend', err);
       }
     };
+
     fetchHeroText();
   }, []);
 
@@ -168,7 +169,7 @@ const Hero = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            {heroTitle || t('hero.title')}
+            {dbTitle || t('hero.title')}
           </motion.h1>
           
           <motion.p
@@ -178,7 +179,7 @@ const Hero = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
           >
-            {heroSubtitle || t('hero.subtitle')}
+            {dbContent || t('hero.subtitle')}
           </motion.p>
           
           <motion.div 
