@@ -17,6 +17,9 @@ const Header = () => {
   const [loadingLinks, setLoadingLinks] = useState(true);
   const [linksValid, setLinksValid] = useState(false);
   const [logoUrl, setLogoUrl] = useState('/ngomna_logo.png');
+  const [logoLoading, setLogoLoading] = useState(true);
+  const [logoFetchedFromBackend, setLogoFetchedFromBackend] = useState(false);
+  const [logoLoaded, setLogoLoaded] = useState(false);
 
   // Static icon map for known feature slugs/labels
   const iconMap = {
@@ -57,13 +60,19 @@ const Header = () => {
   // Fetch logo image url from backend by name 'ngomna_logo'
   useEffect(() => {
     const fetchLogo = async () => {
+      setLogoLoading(true);
       try {
         const res = await axios.get('http://localhost:5000/api/images/name/ngomna_logo');
         if (res && res.data && res.data.url) {
           setLogoUrl(res.data.url);
+          setLogoFetchedFromBackend(true);
         }
       } catch (err) {
         console.warn('Could not fetch logo from backend, using local fallback', err);
+        setLogoFetchedFromBackend(false);
+      } finally {
+        // leave logoLoaded false until <img> onLoad fires
+        setLogoLoading(false);
       }
     };
 
@@ -187,11 +196,33 @@ const Header = () => {
       <div className="container mx-auto px-4 sm:px-6 h-full">
         <div className="flex items-center justify-between h-full">
           <div className="flex items-center space-x-2">
-            <img 
-              src={logoUrl} 
-              alt="nGomna Logo" 
-              className="w-[80px] h-[80px] sm:w-[95px] sm:h-[95px] md:w-[120px] md:h-[120px] lg:w-[140px] lg:h-[140px] object-contain"
-            />
+            <div className="relative w-[80px] h-[80px] sm:w-[95px] sm:h-[95px] md:w-[120px] md:h-[120px] lg:w-[140px] lg:h-[140px] flex items-center justify-center">
+              <img 
+                src={logoUrl} 
+                alt="nGomna Logo" 
+                className="w-full h-full object-contain"
+                onLoad={() => setLogoLoaded(true)}
+              />
+
+              {/* spinner while fetching or while image hasn't loaded */}
+              {(logoLoading || !logoLoaded) && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white/50 rounded">
+                  <svg className="animate-spin h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                  </svg>
+                </div>
+              )}
+
+              {/* verified badge when logo was fetched from backend and loaded */}
+              {logoFetchedFromBackend && logoLoaded && (
+                <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow">
+                  <svg className="h-4 w-4 text-green-600" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              )}
+            </div>
           </div>
           
           {loadingLinks ? (
