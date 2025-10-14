@@ -78,6 +78,11 @@ const Text = sequelize.define('Text', {
     type: DataTypes.TEXT,
     allowNull: false
   },
+  // section column to indicate which section of the page this text belongs to
+  section: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
   pageId: {
     type: DataTypes.INTEGER,
     allowNull: true,
@@ -99,6 +104,20 @@ const Image = sequelize.define('Image', {
     type: DataTypes.STRING,
     allowNull: false
   }
+});
+
+// Define the Section model (sections table) - previously named sectiontemplate
+const Section = sequelize.define('Section', {
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  }
+}, {
+  tableName: 'sections'
 });
 
 // Define the relationships with cascading behavior
@@ -182,6 +201,12 @@ sequelize.sync({ force: true }) // This will recreate the tables
     console.log('Pages created:', pages);
 
     // Add default text entries for all pages
+    // create sections so hero can reference section id 2
+    const sections = await Section.bulkCreate([
+      { name: 'header' },
+      { name: 'hero' }
+    ]);
+
     const texts = await Text.bulkCreate([
       { title: 'Payslips', content: 'Welcome to the Payslips page. Here you can view and manage your payslips securely.', pageId: pages[0].id },
       { title: 'Information', content: 'This is the Information page. Find all the details you need here.', pageId: pages[1].id },
@@ -199,6 +224,8 @@ sequelize.sync({ force: true }) // This will recreate the tables
       { title: 'WhatsApp', content: 'Connect with us on WhatsApp through this page.', pageId: pages[13].id },
       { title: 'Email', content: 'Reach out to us via email using the information on this page.', pageId: pages[14].id },
       { title: 'Facebook', content: 'Follow us on Facebook for updates and more.', pageId: pages[15].id }
+      // Add homepage hero text (pageId 1, section id 2)
+      , { title: 'nGomna', content: 'the citizens closer to the govenrment', pageId: 1, section: sections[1].id }
     ]);
 
     console.log('Text entries created:', texts);
