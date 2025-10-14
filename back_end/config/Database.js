@@ -88,6 +88,19 @@ const Text = sequelize.define('Text', {
   }
 });
 
+// Define the Image model (images table)
+const Image = sequelize.define('Image', {
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
+  url: {
+    type: DataTypes.STRING,
+    allowNull: false
+  }
+});
+
 // Define the relationships with cascading behavior
 Menu.hasMany(MenuItem, {
   foreignKey: 'menuId',
@@ -249,9 +262,15 @@ sequelize.sync({ force: true }) // This will recreate the tables
 
     console.log('Menu with menu items created:', featuresMenu.toJSON());
     console.log('Menu items created:', menuItems);
+    // Create image entries
+    const images = await Image.bulkCreate([
+      { name: 'ngomna_logo', url: '/ngomna_logo.png' }
+    ]);
+
+    console.log('Images created:', images);
   })
   .catch(err => {
     console.error('Unable to create tables:', err);
   });
 
-module.exports = { sequelize, Menu, MenuItem, Page, Link, Text };
+module.exports = { sequelize, Menu, MenuItem, Page, Link, Text, Image };

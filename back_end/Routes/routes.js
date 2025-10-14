@@ -6,6 +6,7 @@ const menuController = require('../controllers/menuController');
 const linkController = require('../controllers/linkController');
 const pageController = require('../controllers/pageController');
 const mediaController = require('../controllers/mediaController'); // Import the text controller
+const imageController = require('../controllers/imageController');
 
 // Route to get all menus
 router.get('/api/menus', menuController.getAllMenus);
@@ -31,5 +32,8 @@ router.put('/api/:pageId', pageController.updatePage);
 // Text Routes
 router.get('/api/text/:pageId', mediaController.getTextByPageId); // Add this route
 router.put('/api/text/:pageId', mediaController.updateTextByPageId); // Add this route for updating text
+
+// Image Routes
+router.get('/api/images/name/:name', imageController.getImageByName);
 
 module.exports = router;

@@ -218,6 +218,17 @@ exports.getAllPages = async () => {
   return await Page.findAll();
 };
 
+// Get image by name
+exports.getImageByName = async (name) => {
+  try {
+    const image = await Image.findOne({ where: { name } });
+    return image;
+  } catch (error) {
+    console.error('Error fetching image by name:', error);
+    throw new Error('Failed to fetch image');
+  }
+};
+
 exports.updatePage = async (id, data) => {
   const page = await Page.findByPk(id);
   if (page) {

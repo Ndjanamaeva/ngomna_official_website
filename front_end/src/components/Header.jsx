@@ -16,6 +16,7 @@ const Header = () => {
   const [allLinks, setAllLinks] = useState([]);
   const [loadingLinks, setLoadingLinks] = useState(true);
   const [linksValid, setLinksValid] = useState(false);
+  const [logoUrl, setLogoUrl] = useState('/ngomna_logo.png');
 
   // Static icon map for known feature slugs/labels
   const iconMap = {
@@ -52,6 +53,22 @@ const Header = () => {
   useEffect(() => {
     fetchLinkById(1);
   }, [fetchLinkById]);
+
+  // Fetch logo image url from backend by name 'ngomna_logo'
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/images/name/ngomna_logo');
+        if (res && res.data && res.data.url) {
+          setLogoUrl(res.data.url);
+        }
+      } catch (err) {
+        console.warn('Could not fetch logo from backend, using local fallback', err);
+      }
+    };
+
+    fetchLogo();
+  }, []);
 
   // Fetch menu items for a given menuId
   const fetchMenuItems = useCallback(async (menuId) => {
@@ -171,7 +188,7 @@ const Header = () => {
         <div className="flex items-center justify-between h-full">
           <div className="flex items-center space-x-2">
             <img 
-              src="/ngomna_logo.png" 
+              src={logoUrl} 
               alt="nGomna Logo" 
               className="w-[80px] h-[80px] sm:w-[95px] sm:h-[95px] md:w-[120px] md:h-[120px] lg:w-[140px] lg:h-[140px] object-contain"
             />
