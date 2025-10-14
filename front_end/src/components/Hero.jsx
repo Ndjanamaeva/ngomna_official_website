@@ -1,10 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Download, Play, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Hero = () => {
   const { t } = useLanguage();
+  const [heroTitle, setHeroTitle] = useState('');
+  const [heroSubtitle, setHeroSubtitle] = useState('');
+
+  useEffect(() => {
+    const fetchHeroText = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/text/page/1/section/2');
+        if (res && res.data) {
+          setHeroTitle(res.data.title || '');
+          setHeroSubtitle(res.data.content || '');
+        }
+      } catch (err) {
+        console.warn('Could not fetch hero text:', err);
+      }
+    };
+    fetchHeroText();
+  }, []);
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 sm:pt-20">
@@ -150,7 +168,7 @@ const Hero = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            {t('hero.title')}
+            {heroTitle || t('hero.title')}
           </motion.h1>
           
           <motion.p
@@ -160,7 +178,7 @@ const Hero = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
           >
-            {t('hero.subtitle')}
+            {heroSubtitle || t('hero.subtitle')}
           </motion.p>
           
           <motion.div 
