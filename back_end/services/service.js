@@ -203,6 +203,17 @@ exports.getLinksByMenuId = async (menuId) => {
   }
 };
 
+// Get a single link by its primary key id
+exports.getLinkById = async (id) => {
+  try {
+    const link = await Link.findByPk(id);
+    return link;
+  } catch (error) {
+    console.error('Error fetching link by id:', error);
+    throw new Error('Failed to fetch link');
+  }
+};
+
 exports.getAllPages = async () => {
   return await Page.findAll();
 };
