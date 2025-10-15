@@ -103,8 +103,24 @@ const Image = sequelize.define('Image', {
   url: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  // sectionid links the image to a Section (nullable)
+  sectionid: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+  // pageId links the image to a Page (nullable)
+  pageId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: Page,
+      key: 'id'
+    }
   }
 });
+
+// Image associations with Section and Page are declared after Section is defined below
 
 // Define the Section model (sections table) - previously named sectiontemplate
 const Section = sequelize.define('Section', {
@@ -118,6 +134,28 @@ const Section = sequelize.define('Section', {
   }
 }, {
   tableName: 'sections'
+});
+
+// Now that Section is defined, associate Image with Section and Page
+Image.belongsTo(Section, {
+  foreignKey: 'sectionid',
+  as: 'section',
+  onDelete: 'SET NULL'
+});
+Section.hasMany(Image, {
+  foreignKey: 'sectionid',
+  as: 'images'
+});
+
+Image.belongsTo(Page, {
+  foreignKey: 'pageId',
+  as: 'page',
+  onDelete: 'CASCADE'
+});
+Page.hasMany(Image, {
+  foreignKey: 'pageId',
+  as: 'images',
+  onDelete: 'CASCADE'
 });
 
 // Define the relationships with cascading behavior
@@ -289,9 +327,10 @@ sequelize.sync({ force: true }) // This will recreate the tables
 
     console.log('Menu with menu items created:', featuresMenu.toJSON());
     console.log('Menu items created:', menuItems);
-    // Create image entries
+    // Create image entries with sectionid and pageId
     const images = await Image.bulkCreate([
-      { name: 'ngomna_logo', url: '/ngomna_logo.png' }
+      { name: 'ngomna_logo', url: '/ngomna_logo.png', sectionid: 1, pageId: 1 },
+      { name: 'phone_image', url: '/phone_image.png', sectionid: 2, pageId: 1 }
     ]);
 
     console.log('Images created:', images);
@@ -300,4 +339,4 @@ sequelize.sync({ force: true }) // This will recreate the tables
     console.error('Unable to create tables:', err);
   });
 
-module.exports = { sequelize, Menu, MenuItem, Page, Link, Text, Image };
+module.exports = { sequelize, Menu, MenuItem, Page, Link, Text, Image, Section };
