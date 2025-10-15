@@ -6,21 +6,31 @@ import axios from 'axios';
 
 const Hero = () => {
   const { t } = useLanguage();
-  const [dbTitle, setDbTitle] = useState('');
-  const [dbContent, setDbContent] = useState('');
+  // null = not loaded, string = value from backend (possibly empty),
+  // this lets us distinguish "not loaded" from "loaded but empty".
+  const [dbTitle, setDbTitle] = useState(null);
+  const [dbContent, setDbContent] = useState(null);
   const [dbLoading, setDbLoading] = useState(true);
+  const [dbError, setDbError] = useState(false);
 
   useEffect(() => {
     const fetchHeroText = async () => {
       setDbLoading(true);
       try {
+        setDbError(false);
         const res = await axios.get('http://localhost:5000/api/text/page/1/section/2');
         if (res && res.data) {
-          setDbTitle(res.data.title || '');
-          setDbContent(res.data.content || '');
+          // allow empty strings from backend to be used as "loaded but empty"
+          setDbTitle(res.data.title ?? '');
+          setDbContent(res.data.content ?? '');
+        } else {
+          // mark as loaded but no data returned
+          setDbTitle('');
+          setDbContent('');
         }
       } catch (err) {
         console.warn('Could not fetch hero text from backend', err);
+        setDbError(true);
       } finally {
         setDbLoading(false);
       }
@@ -174,13 +184,18 @@ const Hero = () => {
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <span className="inline-flex items-center">
-              {dbTitle || t('hero.title')}
-              {dbLoading && (
-                <svg className="animate-spin ml-3 h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              {/* Render priority:
+                  1. While loading -> show spinner (don't show translation fallback)
+                  2. If error -> show explicit error message (no translation fallback)
+                  3. If backend returned a value (including empty string) -> use it
+                  4. Otherwise (loaded but no backend value) -> fall back to translation
+              */}
+              {(dbLoading || dbError) ? (
+                <svg className="animate-spin ml-3 h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                 </svg>
-              )}
+              ) : (dbTitle !== null && dbTitle !== undefined ? dbTitle || t('hero.title') : t('hero.title'))}
             </span>
           </motion.h1>
           
@@ -192,13 +207,12 @@ const Hero = () => {
             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
           >
             <span className="inline-flex items-center">
-              {dbContent || t('hero.subtitle')}
-              {dbLoading && (
-                <svg className="animate-spin ml-3 h-4 w-4 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              {(dbLoading || dbError) ? (
+                <svg className="animate-spin ml-3 h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                 </svg>
-              )}
+              ) : (dbContent !== null && dbContent !== undefined ? dbContent || t('hero.subtitle') : t('hero.subtitle'))}
             </span>
           </motion.p>
           
