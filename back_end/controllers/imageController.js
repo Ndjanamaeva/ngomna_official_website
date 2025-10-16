@@ -21,3 +21,32 @@ exports.getImageById = async (req, res) => {
     res.status(500).json({ message: 'Error fetching image by id', error });
   }
 };
+
+exports.getAllImages = async (req, res) => {
+  try {
+    const images = await service.getAllImages();
+    res.json(images);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching images', error });
+  }
+};
+
+exports.getImagesBySection = async (req, res) => {
+  try {
+    const { sectionId } = req.params;
+    const images = await service.getImagesBySection(sectionId);
+    res.json(images);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching images by section', error });
+  }
+};
+
+exports.getImagesByPage = async (req, res) => {
+  try {
+    const { pageId } = req.params;
+    const images = await service.getImagesByPage(pageId);
+    res.json(images);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching images by page', error });
+  }
+};

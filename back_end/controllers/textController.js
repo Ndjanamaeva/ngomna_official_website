@@ -1,16 +1,16 @@
 const { Text } = require('../config/Database');
 
-// Fetch text by pageId
+// Fetch all text entries by pageId (body content without section)
 exports.getTextByPageId = async (req, res) => {
   try {
     const { pageId } = req.params;
-    const text = await Text.findOne({ where: { pageId } });
+    const texts = await Text.findAll({ where: { pageId, section: null } });
 
-    if (!text) {
+    if (!texts || texts.length === 0) {
       return res.status(404).json({ message: 'Text not found' });
     }
 
-    res.json(text);
+    res.json(texts);
   } catch (error) {
     console.error('Error fetching text:', error);
     res.status(500).json({ message: 'Server error' });
@@ -66,6 +66,34 @@ exports.getTextByPageAndSection = async (req, res) => {
     res.json(text);
   } catch (error) {
     console.error('Error fetching text by page and section:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Fetch all text entries by section only (for shared content like header)
+exports.getTextBySection = async (req, res) => {
+  try {
+    const { sectionId } = req.params;
+    const texts = await Text.findAll({ where: { section: sectionId, pageId: null } });
+
+    if (!texts || texts.length === 0) {
+      return res.status(404).json({ message: 'Text not found for that section' });
+    }
+
+    res.json(texts);
+  } catch (error) {
+    console.error('Error fetching text by section:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Fetch all text entries
+exports.getAllTexts = async (req, res) => {
+  try {
+    const texts = await Text.findAll();
+    res.json(texts);
+  } catch (error) {
+    console.error('Error fetching all texts:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };

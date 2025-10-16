@@ -218,6 +218,50 @@ exports.getAllPages = async () => {
   return await Page.findAll();
 };
 
+// Get page by id
+exports.getPageById = async (id) => {
+  try {
+    const page = await Page.findByPk(id);
+    return page;
+  } catch (error) {
+    console.error('Error fetching page by id:', error);
+    throw new Error('Failed to fetch page');
+  }
+};
+
+// Get page by URL
+exports.getPageByUrl = async (url) => {
+  try {
+    const page = await Page.findOne({ where: { url } });
+    return page;
+  } catch (error) {
+    console.error('Error fetching page by URL:', error);
+    throw new Error('Failed to fetch page');
+  }
+};
+
+// Get all sections
+exports.getAllSections = async () => {
+  try {
+    const sections = await Page.sequelize.models.Section.findAll();
+    return sections;
+  } catch (error) {
+    console.error('Error fetching sections:', error);
+    throw new Error('Failed to fetch sections');
+  }
+};
+
+// Get section by id
+exports.getSectionById = async (id) => {
+  try {
+    const section = await Page.sequelize.models.Section.findByPk(id);
+    return section;
+  } catch (error) {
+    console.error('Error fetching section by id:', error);
+    throw new Error('Failed to fetch section');
+  }
+};
+
 // Get image by name
 exports.getImageByName = async (name) => {
   try {
@@ -237,6 +281,39 @@ exports.getImageById = async (id) => {
   } catch (error) {
     console.error('Error fetching image by id:', error);
     throw new Error('Failed to fetch image');
+  }
+};
+
+// Get all images
+exports.getAllImages = async () => {
+  try {
+    const images = await Image.findAll();
+    return images;
+  } catch (error) {
+    console.error('Error fetching all images:', error);
+    throw new Error('Failed to fetch images');
+  }
+};
+
+// Get images by section
+exports.getImagesBySection = async (sectionId) => {
+  try {
+    const images = await Image.findAll({ where: { sectionid: sectionId } });
+    return images;
+  } catch (error) {
+    console.error('Error fetching images by section:', error);
+    throw new Error('Failed to fetch images');
+  }
+};
+
+// Get images by page
+exports.getImagesByPage = async (pageId) => {
+  try {
+    const images = await Image.findAll({ where: { pageId } });
+    return images;
+  } catch (error) {
+    console.error('Error fetching images by page:', error);
+    throw new Error('Failed to fetch images');
   }
 };
 
