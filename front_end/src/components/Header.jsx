@@ -132,25 +132,16 @@ const Header = () => {
     setIsDropdownOpen(false);
   };
 
-  // Fetch links for each menu (features=1, about=2, contact=3) using Promise.all
+  // Fetch links for features menu (only features menu exists now)
   useEffect(() => {
     const fetchLinks = async () => {
       try {
-        const [featuresResponse, aboutResponse, contactResponse] = await Promise.all([
-          axios.get('http://localhost:5000/api/links/1'),
-          axios.get('http://localhost:5000/api/links/2'),
-          axios.get('http://localhost:5000/api/links/3')
-        ]);
-
+        // Only fetch features menu links (menuId=1) since about and contact were removed
+        const featuresResponse = await axios.get('http://localhost:5000/api/links/1');
         setFeaturesLinks(featuresResponse.data || []);
-        setAboutLinks(aboutResponse.data || []);
-        setContactLinks(contactResponse.data || []);
-
         console.log('featuresLinks:', featuresResponse.data);
-        console.log('aboutLinks:', aboutResponse.data);
-        console.log('contactLinks:', contactResponse.data);
 
-        // Also fetch all links and store them for mapping nav items dynamically
+        // Fetch all links and store them for mapping nav items dynamically
         try {
           const allRes = await axios.get('http://localhost:5000/api/links');
           setAllLinks(allRes.data || []);
@@ -166,6 +157,7 @@ const Header = () => {
         }
       } catch (error) {
         console.error('Error fetching links:', error);
+        setLoadingLinks(false);
       }
     };
 
