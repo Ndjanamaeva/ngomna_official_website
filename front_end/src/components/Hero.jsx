@@ -12,6 +12,9 @@ const Hero = () => {
   const [dbContent, setDbContent] = useState(null);
   const [dbLoading, setDbLoading] = useState(true);
   const [dbError, setDbError] = useState(false);
+  const [phoneImageUrl, setPhoneImageUrl] = useState(null);
+  const [phoneLoading, setPhoneLoading] = useState(true);
+  const [phoneError, setPhoneError] = useState(false);
 
   useEffect(() => {
     const fetchHeroText = async () => {
@@ -37,6 +40,60 @@ const Hero = () => {
     };
 
     fetchHeroText();
+  }, []);
+
+  // Fetch phone image record from backend and use its url
+  useEffect(() => {
+    let mounted = true;
+    const fetchPhoneImage = async () => {
+      setPhoneLoading(true);
+      setPhoneError(false);
+      try {
+        const res = await axios.get('http://localhost:5000/api/images/name/phone_image');
+        if (!mounted) return;
+        const img = res && res.data ? res.data : null;
+        // Only load the image directly from the backend. If backend is not reachable or
+        // the image URL does not resolve, leave the phone empty (null) per user's request.
+        if (img && img.url) {
+          let rawUrl = img.url;
+          if (!/^https?:\/\//.test(rawUrl) && !rawUrl.startsWith('/')) rawUrl = '/' + rawUrl;
+
+          // Prefer backend absolute URL. If the DB contains a relative path, prefix with backend origin.
+          const candidate = /^https?:\/\//.test(rawUrl) ? rawUrl : 'http://localhost:5000' + rawUrl;
+          try {
+            // Verify the backend serves the image and it's accessible.
+            const head = await axios.get(candidate, { responseType: 'blob' });
+            if (!mounted) return;
+            if (head && head.status >= 200 && head.status < 300) {
+              setPhoneImageUrl(candidate);
+            } else {
+              // leave null (phone remains empty)
+              setPhoneImageUrl(null);
+            }
+          } catch (err) {
+            // backend not reachable or image not found / CORS issue -> keep phone empty
+            // eslint-disable-next-line no-console
+            console.warn('phone image fetch failed for', candidate, err && err.message ? err.message : err);
+            if (!mounted) return;
+            setPhoneImageUrl(null);
+            setPhoneError(true);
+          }
+        } else {
+          // no image record -> keep phone empty
+          setPhoneImageUrl(null);
+        }
+      } catch (err) {
+        console.warn('Could not fetch phone image from backend', err);
+        if (!mounted) return;
+        setPhoneError(true);
+        setPhoneImageUrl(null);
+      } finally {
+        if (mounted) setPhoneLoading(false);
+      }
+    };
+
+    fetchPhoneImage();
+    return () => { mounted = false; };
   }, []);
 
   return (
@@ -93,8 +150,8 @@ const Hero = () => {
             {/* Screen content */}
             <div className="absolute inset-0 rounded-[33px] sm:rounded-[38px] md:rounded-[43px] lg:rounded-[48px] overflow-hidden bg-white">
               <div className="absolute inset-0 pt-[4px] sm:pt-[6px]">
-                <img 
-                  src="/Capture.PNG" 
+                <img
+                  src={phoneImageUrl || '/Capture.PNG'}
                   alt="nGomna App Interface"
                   className="w-full h-full object-cover"
                   loading="eager"
