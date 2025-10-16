@@ -57,21 +57,25 @@ const Header = () => {
     fetchLinkById(1);
   }, [fetchLinkById]);
 
-  // Fetch logo image by id (strictly from backend)
+  // Fetch logo image by name (strictly from backend)
   useEffect(() => {
     const fetchLogo = async () => {
       setLogoLoading(true);
       try {
-        const res = await axios.get('http://localhost:5000/api/images/1');
+        const res = await axios.get('http://localhost:5000/api/images/name/ngomna_logo');
         if (res && res.data && res.data.url) {
-          setLogoUrl(res.data.url);
+          // Construct full URL if it's a relative path
+          const logoPath = res.data.url.startsWith('http')
+            ? res.data.url
+            : `http://localhost:5000${res.data.url}`;
+          setLogoUrl(logoPath);
           setLogoFetchedFromBackend(true);
         } else {
           // If backend didn't return url, mark as not fetched
           setLogoFetchedFromBackend(false);
         }
       } catch (err) {
-        console.warn('Could not fetch logo by id from backend', err);
+        console.warn('Could not fetch logo by name from backend', err);
         setLogoFetchedFromBackend(false);
       } finally {
         setLogoLoading(false);
