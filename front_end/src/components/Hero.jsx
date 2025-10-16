@@ -59,25 +59,8 @@ const Hero = () => {
           if (!/^https?:\/\//.test(rawUrl) && !rawUrl.startsWith('/')) rawUrl = '/' + rawUrl;
 
           // Prefer backend absolute URL. If the DB contains a relative path, prefix with backend origin.
-          const candidate = /^https?:\/\//.test(rawUrl) ? rawUrl : 'http://localhost:5000' + rawUrl;
-          try {
-            // Verify the backend serves the image and it's accessible.
-            const head = await axios.get(candidate, { responseType: 'blob' });
-            if (!mounted) return;
-            if (head && head.status >= 200 && head.status < 300) {
-              setPhoneImageUrl(candidate);
-            } else {
-              // leave null (phone remains empty)
-              setPhoneImageUrl(null);
-            }
-          } catch (err) {
-            // backend not reachable or image not found / CORS issue -> keep phone empty
-            // eslint-disable-next-line no-console
-            console.warn('phone image fetch failed for', candidate, err && err.message ? err.message : err);
-            if (!mounted) return;
-            setPhoneImageUrl(null);
-            setPhoneError(true);
-          }
+          const imageUrl = /^https?:\/\//.test(rawUrl) ? rawUrl : 'http://localhost:5000' + rawUrl;
+          setPhoneImageUrl(imageUrl);
         } else {
           // no image record -> keep phone empty
           setPhoneImageUrl(null);
@@ -150,16 +133,18 @@ const Hero = () => {
             {/* Screen content */}
             <div className="absolute inset-0 rounded-[33px] sm:rounded-[38px] md:rounded-[43px] lg:rounded-[48px] overflow-hidden bg-white">
               <div className="absolute inset-0 pt-[4px] sm:pt-[6px]">
-                <img
-                  src={phoneImageUrl || '/Capture.PNG'}
-                  alt="nGomna App Interface"
-                  className="w-full h-full object-cover"
-                  loading="eager"
-                  style={{
-                    imageRendering: "crisp-edges",
-                    backgroundColor: "white"
-                  }}
-                />
+                {phoneImageUrl && (
+                  <img
+                    src={phoneImageUrl}
+                    alt="nGomna App Interface"
+                    className="w-full h-full object-cover"
+                    loading="eager"
+                    style={{
+                      imageRendering: "crisp-edges",
+                      backgroundColor: "white"
+                    }}
+                  />
+                )}
               </div>
               <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-emerald-500/5 mix-blend-overlay" />
             </div>
