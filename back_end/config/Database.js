@@ -127,10 +127,6 @@ const Section = sequelize.define('Section', {
   name: {
     type: DataTypes.STRING,
     allowNull: false
-  },
-  description: {
-    type: DataTypes.TEXT,
-    allowNull: true
   }
 }, {
   tableName: 'sections'
@@ -211,6 +207,17 @@ Page.hasMany(Text, {
   onDelete: 'CASCADE' // Ensure deletion of Texts when Page is deleted
 });
 
+// Define the relationship between Text and Section
+Text.belongsTo(Section, {
+  foreignKey: 'section',
+  as: 'sectionData',
+  onDelete: 'SET NULL'
+});
+Section.hasMany(Text, {
+  foreignKey: 'section',
+  as: 'texts'
+});
+
 // Sync the models with the database and insert sample data
 sequelize.sync({ force: true }) // This will recreate the tables
   .then(async () => {
@@ -242,10 +249,34 @@ sequelize.sync({ force: true }) // This will recreate the tables
     // create sections so hero can reference section id 2
     const sections = await Section.bulkCreate([
       { name: 'header' },
-      { name: 'hero' }
+      { name: 'hero' },
+      { name: 'about_ngomna' }
     ]);
 
     const texts = await Text.bulkCreate([
+      // Shared header text (not tied to any specific page, only to header section)
+      { title: 'nGomna', content: 'Bringing citizens closer to government', section: sections[0].id },
+
+      // Hero section texts for each page (associated with both page and hero section)
+      { title: 'nGomna', content: 'the citizens closer to the government', pageId: 1, section: sections[1].id },
+      { title: 'Payslips', content: 'Manage and view your payslips securely', pageId: pages[0].id, section: sections[1].id },
+      { title: 'Information', content: 'Access all the information you need', pageId: pages[1].id, section: sections[1].id },
+      { title: 'Notifications', content: 'Stay updated with the latest alerts', pageId: pages[2].id, section: sections[1].id },
+      { title: 'Census', content: 'Manage census data efficiently', pageId: pages[3].id, section: sections[1].id },
+      { title: 'Messaging', content: 'Secure messaging for government services', pageId: pages[4].id, section: sections[1].id },
+      { title: 'Children', content: 'Manage children information safely', pageId: pages[5].id, section: sections[1].id },
+      { title: 'Security', content: 'Your security is our priority', pageId: pages[6].id, section: sections[1].id },
+      { title: 'OTP', content: 'Secure one-time password generation', pageId: pages[7].id, section: sections[1].id },
+      { title: 'DGI', content: 'Tax information and services', pageId: pages[8].id, section: sections[1].id },
+      { title: 'GOV-AI', content: 'AI-powered government assistance', pageId: pages[9].id, section: sections[1].id },
+      { title: 'Mission', content: 'Our commitment to serving you', pageId: pages[10].id, section: sections[1].id },
+      { title: 'Vision', content: 'Building the future of digital governance', pageId: pages[11].id, section: sections[1].id },
+      { title: 'Perspectives', content: 'Insights and future outlook', pageId: pages[12].id, section: sections[1].id },
+      { title: 'WhatsApp', content: 'Connect with us on WhatsApp', pageId: pages[13].id, section: sections[1].id },
+      { title: 'Email', content: 'Reach us via email', pageId: pages[14].id, section: sections[1].id },
+      { title: 'Facebook', content: 'Follow us on Facebook', pageId: pages[15].id, section: sections[1].id },
+
+      // Page body content (main content sections - no section ID, just pageId)
       { title: 'Payslips', content: 'Welcome to the Payslips page. Here you can view and manage your payslips securely.', pageId: pages[0].id },
       { title: 'Information', content: 'This is the Information page. Find all the details you need here.', pageId: pages[1].id },
       { title: 'Notifications', content: 'Stay updated with the latest notifications on this page.', pageId: pages[2].id },
@@ -262,28 +293,18 @@ sequelize.sync({ force: true }) // This will recreate the tables
       { title: 'WhatsApp', content: 'Connect with us on WhatsApp through this page.', pageId: pages[13].id },
       { title: 'Email', content: 'Reach out to us via email using the information on this page.', pageId: pages[14].id },
       { title: 'Facebook', content: 'Follow us on Facebook for updates and more.', pageId: pages[15].id }
-      // Add homepage hero text (pageId 1, section id 2)
-      , { title: 'nGomna', content: 'the citizens closer to the govenrment', pageId: 1, section: sections[1].id }
     ]);
 
     console.log('Text entries created:', texts);
 
-    // Create menus 'features', 'about', and 'contact'
+    // Create menu 'features'
     const featuresMenu = await Menu.create({
       title: 'features'
     });
 
-    const aboutMenu = await Menu.create({
-      title: 'about'
-    });
+    console.log('Menu created:', featuresMenu);
 
-    const contactMenu = await Menu.create({
-      title: 'contact'
-    });
-
-    console.log('Menus created:', { featuresMenu, aboutMenu, contactMenu });
-
-    // Create links
+    // Create links for features menu only
     const links = await Link.bulkCreate([
       { label: 'payslips', menuId: featuresMenu.id, url: '/payslips', pageId: pages[0].id },
       { label: 'information', menuId: featuresMenu.id, url: '/information', pageId: pages[1].id },
@@ -294,13 +315,7 @@ sequelize.sync({ force: true }) // This will recreate the tables
       { label: 'security', menuId: featuresMenu.id, url: '/security', pageId: pages[6].id },
       { label: 'OTP', menuId: featuresMenu.id, url: '/otp', pageId: pages[7].id },
       { label: 'DGI', menuId: featuresMenu.id, url: '/dgi', pageId: pages[8].id },
-      { label: 'GOV-AI', menuId: featuresMenu.id, url: '/gov-ai', pageId: pages[9].id },
-      { label: 'mission', menuId: aboutMenu.id, url: '/mission', pageId: pages[10].id },
-      { label: 'vision', menuId: aboutMenu.id, url: '/vision', pageId: pages[11].id },
-      { label: 'perspectives', menuId: aboutMenu.id, url: '/perspectives', pageId: pages[12].id },
-      { label: 'whatsapp', menuId: contactMenu.id, url: '/whatsapp', pageId: pages[13].id },
-      { label: 'email', menuId: contactMenu.id, url: '/email', pageId: pages[14].id },
-      { label: 'facebook', menuId: contactMenu.id, url: '/facebook', pageId: pages[15].id }
+      { label: 'GOV-AI', menuId: featuresMenu.id, url: '/gov-ai', pageId: pages[9].id }
     ]);
 
     console.log('Links created:', links);
@@ -316,13 +331,7 @@ sequelize.sync({ force: true }) // This will recreate the tables
       { label: 'security', menuId: featuresMenu.id, url: '/security', pageId: pages[6].id },
       { label: 'OTP', menuId: featuresMenu.id, url: '/OTP', pageId: pages[7].id },
       { label: 'DGI', menuId: featuresMenu.id, url: '/DGI', pageId: pages[8].id },
-      { label: 'GOV-AI', menuId: featuresMenu.id, url: '/gov-ai', pageId: pages[9].id },
-      { label: 'mission', menuId: aboutMenu.id, url: '/mission', pageId: pages[10].id },
-      { label: 'vision', menuId: aboutMenu.id, url: '/vision', pageId: pages[11].id },
-      { label: 'perspectives', menuId: aboutMenu.id, url: '/perspectives', pageId: pages[12].id },
-      { label: 'whatsapp', menuId: contactMenu.id, url: '/whatsapp', pageId: pages[13].id },
-      { label: 'email', menuId: contactMenu.id, url: '/email', pageId: pages[14].id },
-      { label: 'facebook', menuId: contactMenu.id, url: '/facebook', pageId: pages[15].id },
+      { label: 'GOV-AI', menuId: featuresMenu.id, url: '/gov-ai', pageId: pages[9].id }
     ]);
 
     console.log('Menu with menu items created:', featuresMenu.toJSON());
