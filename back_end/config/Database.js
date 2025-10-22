@@ -293,6 +293,24 @@ sequelize.sync({ force: true }) // This will recreate the tables
       { title: 'WhatsApp', content: 'Connect with us on WhatsApp through this page.', pageId: pages[13].id },
       { title: 'Email', content: 'Reach out to us via email using the information on this page.', pageId: pages[14].id },
       { title: 'Facebook', content: 'Follow us on Facebook for updates and more.', pageId: pages[15].id }
+  ,
+  // About nGomna section texts (section: about_ngomna -> sections[2].id)
+  { title: 'about.description', content: 'nGomna is a cutting-edge mobile application developed in partnership with government institutions to provide citizens with seamless access to essential services. From payslips to official documents, we\'re transforming how you interact with government services.', section: sections[2].id },
+  { title: 'vision.point1', content: 'Bring Cameroonian public servants closer to government services', section: sections[2].id },
+  { title: 'vision.point2', content: 'Bring ordinary citizens closer to government services', section: sections[2].id },
+  { title: 'vision.point3', content: 'Foundational building block of e-citizenship', section: sections[2].id },
+  { title: 'vision.point4', content: 'Protection of the identity and data of public servants', section: sections[2].id },
+  { title: 'mission.point1', content: 'Download payslips via account using internet-connected phone', section: sections[2].id },
+  { title: 'mission.point2', content: 'Display real-time notifications and payslip status updates', section: sections[2].id },
+  { title: 'mission.point3', content: 'Protect data of every user registered in the system', section: sections[2].id },
+  { title: 'mission.point4', content: 'Support for account reset, installation assistance, and bug tracking', section: sections[2].id },
+  { title: 'future.description', content: 'Expanding our platform with new services to enhance digital sovereignty and secure communications', section: sections[2].id },
+  { title: 'future.service1.title', content: 'Government Messaging', section: sections[2].id },
+  { title: 'future.service1.description', content: 'Secure communications between public servants, reducing reliance on external platforms', section: sections[2].id },
+  { title: 'future.service2.title', content: 'E-Services Integration', section: sections[2].id },
+  { title: 'future.service2.description', content: 'Comprehensive digital services platform for all government interactions', section: sections[2].id },
+  { title: 'future.service3.title', content: 'Data Sovereignty', section: sections[2].id },
+  { title: 'future.service3.description', content: 'State control over citizen data with advanced security measures', section: sections[2].id }
     ]);
 
     console.log('Text entries created:', texts);

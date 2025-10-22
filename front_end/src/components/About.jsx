@@ -76,56 +76,56 @@ const About = () => {
   const visionPoints = [
     {
       icon: <Users className="w-6 h-6" />,
-      text: remoteTexts && remoteTexts['vision'] && remoteTexts['vision'].content ? remoteTexts['vision'].content : t('about.vision.point1')
+      text: remoteTexts && remoteTexts['vision.point1'] && remoteTexts['vision.point1'].content ? remoteTexts['vision.point1'].content : t('about.vision.point1')
     },
     {
       icon: <Globe className="w-6 h-6" />,
-      text: remoteTexts && remoteTexts['vision'] && remoteTexts['vision'].content ? remoteTexts['vision'].content : t('about.vision.point2')
+      text: remoteTexts && remoteTexts['vision.point2'] && remoteTexts['vision.point2'].content ? remoteTexts['vision.point2'].content : t('about.vision.point2')
     },
     {
       icon: <CheckCircle className="w-6 h-6" />,
-      text: t('about.vision.point3')
+      text: remoteTexts && remoteTexts['vision.point3'] && remoteTexts['vision.point3'].content ? remoteTexts['vision.point3'].content : t('about.vision.point3')
     },
     {
       icon: <Shield className="w-6 h-6" />,
-      text: t('about.vision.point4')
+      text: remoteTexts && remoteTexts['vision.point4'] && remoteTexts['vision.point4'].content ? remoteTexts['vision.point4'].content : t('about.vision.point4')
     }
   ];
 
   const missionPoints = [
     {
       icon: <Smartphone className="w-6 h-6" />,
-      text: remoteTexts && remoteTexts['mission'] && remoteTexts['mission'].content ? remoteTexts['mission'].content : t('about.mission.point1')
+      text: remoteTexts && remoteTexts['mission.point1'] && remoteTexts['mission.point1'].content ? remoteTexts['mission.point1'].content : t('about.mission.point1')
     },
     {
       icon: <Bell className="w-6 h-6" />,
-      text: remoteTexts && remoteTexts['mission'] && remoteTexts['mission'].content ? remoteTexts['mission'].content : t('about.mission.point2')
+      text: remoteTexts && remoteTexts['mission.point2'] && remoteTexts['mission.point2'].content ? remoteTexts['mission.point2'].content : t('about.mission.point2')
     },
     {
       icon: <Lock className="w-6 h-6" />,
-      text: t('about.mission.point3')
+      text: remoteTexts && remoteTexts['mission.point3'] && remoteTexts['mission.point3'].content ? remoteTexts['mission.point3'].content : t('about.mission.point3')
     },
     {
       icon: <Users className="w-6 h-6" />,
-      text: t('about.mission.point4')
+      text: remoteTexts && remoteTexts['mission.point4'] && remoteTexts['mission.point4'].content ? remoteTexts['mission.point4'].content : t('about.mission.point4')
     }
   ];
 
   const futureServices = [
     {
       icon: <Mail className="w-8 h-8" />,
-      title: t('about.future.service1.title'),
-      description: t('about.future.service1.description')
+      title: remoteTexts && remoteTexts['future.service1.title'] && remoteTexts['future.service1.title'].content ? remoteTexts['future.service1.title'].content : t('about.future.service1.title'),
+      description: remoteTexts && remoteTexts['future.service1.description'] && remoteTexts['future.service1.description'].content ? remoteTexts['future.service1.description'].content : t('about.future.service1.description')
     },
     {
       icon: <Globe className="w-8 h-8" />,
-      title: t('about.future.service2.title'),
-      description: t('about.future.service2.description')
+      title: remoteTexts && remoteTexts['future.service2.title'] && remoteTexts['future.service2.title'].content ? remoteTexts['future.service2.title'].content : t('about.future.service2.title'),
+      description: remoteTexts && remoteTexts['future.service2.description'] && remoteTexts['future.service2.description'].content ? remoteTexts['future.service2.description'].content : t('about.future.service2.description')
     },
     {
       icon: <Shield className="w-8 h-8" />,
-      title: t('about.future.service3.title'),
-      description: t('about.future.service3.description')
+      title: remoteTexts && remoteTexts['future.service3.title'] && remoteTexts['future.service3.title'].content ? remoteTexts['future.service3.title'].content : t('about.future.service3.title'),
+      description: remoteTexts && remoteTexts['future.service3.description'] && remoteTexts['future.service3.description'].content ? remoteTexts['future.service3.description'].content : t('about.future.service3.description')
     }
   ];
 
