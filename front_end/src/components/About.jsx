@@ -76,58 +76,68 @@ const About = () => {
   const visionPoints = [
     {
       icon: <Users className="w-6 h-6" />,
-      text: remoteTexts && remoteTexts['vision.point1'] && remoteTexts['vision.point1'].content ? remoteTexts['vision.point1'].content : t('about.vision.point1')
+      text: remoteTexts && remoteTexts['vision.point1'] && remoteTexts['vision.point1'].content ? remoteTexts['vision.point1'].content : null
     },
     {
       icon: <Globe className="w-6 h-6" />,
-      text: remoteTexts && remoteTexts['vision.point2'] && remoteTexts['vision.point2'].content ? remoteTexts['vision.point2'].content : t('about.vision.point2')
+      text: remoteTexts && remoteTexts['vision.point2'] && remoteTexts['vision.point2'].content ? remoteTexts['vision.point2'].content : null
     },
     {
       icon: <CheckCircle className="w-6 h-6" />,
-      text: remoteTexts && remoteTexts['vision.point3'] && remoteTexts['vision.point3'].content ? remoteTexts['vision.point3'].content : t('about.vision.point3')
+      text: remoteTexts && remoteTexts['vision.point3'] && remoteTexts['vision.point3'].content ? remoteTexts['vision.point3'].content : null
     },
     {
       icon: <Shield className="w-6 h-6" />,
-      text: remoteTexts && remoteTexts['vision.point4'] && remoteTexts['vision.point4'].content ? remoteTexts['vision.point4'].content : t('about.vision.point4')
+      text: remoteTexts && remoteTexts['vision.point4'] && remoteTexts['vision.point4'].content ? remoteTexts['vision.point4'].content : null
     }
   ];
 
   const missionPoints = [
     {
       icon: <Smartphone className="w-6 h-6" />,
-      text: remoteTexts && remoteTexts['mission.point1'] && remoteTexts['mission.point1'].content ? remoteTexts['mission.point1'].content : t('about.mission.point1')
+      text: remoteTexts && remoteTexts['mission.point1'] && remoteTexts['mission.point1'].content ? remoteTexts['mission.point1'].content : null
     },
     {
       icon: <Bell className="w-6 h-6" />,
-      text: remoteTexts && remoteTexts['mission.point2'] && remoteTexts['mission.point2'].content ? remoteTexts['mission.point2'].content : t('about.mission.point2')
+      text: remoteTexts && remoteTexts['mission.point2'] && remoteTexts['mission.point2'].content ? remoteTexts['mission.point2'].content : null
     },
     {
       icon: <Lock className="w-6 h-6" />,
-      text: remoteTexts && remoteTexts['mission.point3'] && remoteTexts['mission.point3'].content ? remoteTexts['mission.point3'].content : t('about.mission.point3')
+      text: remoteTexts && remoteTexts['mission.point3'] && remoteTexts['mission.point3'].content ? remoteTexts['mission.point3'].content : null
     },
     {
       icon: <Users className="w-6 h-6" />,
-      text: remoteTexts && remoteTexts['mission.point4'] && remoteTexts['mission.point4'].content ? remoteTexts['mission.point4'].content : t('about.mission.point4')
+      text: remoteTexts && remoteTexts['mission.point4'] && remoteTexts['mission.point4'].content ? remoteTexts['mission.point4'].content : null
     }
   ];
 
   const futureServices = [
     {
       icon: <Mail className="w-8 h-8" />,
-      title: remoteTexts && remoteTexts['future.service1.title'] && remoteTexts['future.service1.title'].content ? remoteTexts['future.service1.title'].content : t('about.future.service1.title'),
-      description: remoteTexts && remoteTexts['future.service1.description'] && remoteTexts['future.service1.description'].content ? remoteTexts['future.service1.description'].content : t('about.future.service1.description')
+      title: null,
+      description: null
     },
     {
       icon: <Globe className="w-8 h-8" />,
-      title: remoteTexts && remoteTexts['future.service2.title'] && remoteTexts['future.service2.title'].content ? remoteTexts['future.service2.title'].content : t('about.future.service2.title'),
-      description: remoteTexts && remoteTexts['future.service2.description'] && remoteTexts['future.service2.description'].content ? remoteTexts['future.service2.description'].content : t('about.future.service2.description')
+      title: null,
+      description: null
     },
     {
       icon: <Shield className="w-8 h-8" />,
-      title: remoteTexts && remoteTexts['future.service3.title'] && remoteTexts['future.service3.title'].content ? remoteTexts['future.service3.title'].content : t('about.future.service3.title'),
-      description: remoteTexts && remoteTexts['future.service3.description'] && remoteTexts['future.service3.description'].content ? remoteTexts['future.service3.description'].content : t('about.future.service3.description')
+      title: null,
+      description: null
     }
   ];
+
+  // Helper to resolve remote text for either 'future.xxx' or 'about.future.xxx'
+  const resolveFutureKey = (key) => {
+    if (!remoteTexts) return null;
+    const short = `future.${key}`.toLowerCase();
+    const prefixed = `about.future.${key}`.toLowerCase();
+    if (remoteTexts[short] && remoteTexts[short].content) return remoteTexts[short].content;
+    if (remoteTexts[prefixed] && remoteTexts[prefixed].content) return remoteTexts[prefixed].content;
+    return null;
+  };
 
   // Refs and state for stacking animation
   const futureContainerRef = useRef(null);
@@ -225,8 +235,18 @@ const About = () => {
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
             viewport={{ once: true }}
           >
-            {remoteLoading ? t('about.description') : (remoteTexts && remoteTexts['about'] && remoteTexts['about'].content ? remoteTexts['about'].content : t('about.description'))}
+            {remoteLoading || remoteError || !(remoteTexts && remoteTexts['about.description'] && remoteTexts['about.description'].content) ? (
+              <div className="flex items-center justify-center py-6">
+                <svg className="animate-spin h-8 w-8 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                </svg>
+              </div>
+            ) : (
+              <span>{remoteTexts['about.description'].content}</span>
+            )}
           </motion.p>
+          {/* status badge removed per user request */}
         </AnimatedSection>
 
         {/* Mission and Vision Section */}
@@ -261,7 +281,16 @@ const About = () => {
                     <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 flex-shrink-0">
                       {point.icon}
                     </div>
-                    <p className="text-gray-700 font-medium leading-relaxed">{point.text}</p>
+                    <div className="text-gray-700 font-medium leading-relaxed">
+                      {point.text ? (
+                        <p>{point.text}</p>
+                      ) : (
+                        <svg className="animate-spin h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                        </svg>
+                      )}
+                    </div>
                   </motion.div>
                 ))}
               </motion.div>
@@ -297,7 +326,16 @@ const About = () => {
                     <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-green-600 flex-shrink-0">
                       {point.icon}
                     </div>
-                    <p className="text-gray-700 font-medium leading-relaxed">{point.text}</p>
+                    <div className="text-gray-700 font-medium leading-relaxed">
+                      {point.text ? (
+                        <p>{point.text}</p>
+                      ) : (
+                        <svg className="animate-spin h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                        </svg>
+                      )}
+                    </div>
                   </motion.div>
                 ))}
               </motion.div>
@@ -320,15 +358,22 @@ const About = () => {
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center">
                 <ArrowRight className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">{t('about.future.title')}</h3>
+              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">{remoteTexts && remoteTexts['future.title'] && remoteTexts['future.title'].content ? remoteTexts['future.title'].content : t('about.future.title')}</h3>
             </div>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">{t('about.future.description')}</p>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">{remoteTexts && remoteTexts['future.description'] && remoteTexts['future.description'].content ? remoteTexts['future.description'].content : (
+              remoteLoading || remoteError ? (
+                <svg className="animate-spin inline-block h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                </svg>
+              ) : t('about.future.description')
+            )}</p>
           </motion.div>
 
           <div className="relative">
             {/* Hidden grid placeholders used for measuring final positions */}
             <div ref={futureContainerRef} className="grid md:grid-cols-3 gap-8 opacity-0 pointer-events-none">
-              {futureServices.map((service, index) => (
+                {futureServices.map((service, index) => (
                 <div
                   key={index}
                   ref={el => placeholderRefs.current[index] = el}
@@ -337,8 +382,8 @@ const About = () => {
                   <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-white mb-6">
                     {service.icon}
                   </div>
-                  <h4 className="text-xl font-bold text-gray-900 mb-4">{service.title}</h4>
-                  <p className="text-gray-600 leading-relaxed">{service.description}</p>
+                  <h4 className="text-xl font-bold text-gray-900 mb-4">{resolveFutureKey(`service${index+1}.title`) || service.title || null}</h4>
+                  <p className="text-gray-600 leading-relaxed">{resolveFutureKey(`service${index+1}.description`) || service.description || null}</p>
                 </div>
               ))}
             </div>
@@ -372,8 +417,26 @@ const About = () => {
                       <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-white mb-6">
                         {futureServices[i].icon}
                       </div>
-                      <h4 className="text-xl font-bold text-gray-900 mb-4">{futureServices[i].title}</h4>
-                      <p className="text-gray-600 leading-relaxed">{futureServices[i].description}</p>
+                      <div className="mb-4">
+                        {resolveFutureKey(`service${i+1}.title`) ? (
+                          <h4 className="text-xl font-bold text-gray-900">{resolveFutureKey(`service${i+1}.title`)}</h4>
+                        ) : (
+                          <svg className="animate-spin h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                          </svg>
+                        )}
+                      </div>
+                      <div>
+                        {resolveFutureKey(`service${i+1}.description`) ? (
+                          <p className="text-gray-600 leading-relaxed">{resolveFutureKey(`service${i+1}.description`)}</p>
+                        ) : (
+                          <svg className="animate-spin h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                          </svg>
+                        )}
+                      </div>
                     </div>
                   </motion.div>
                 );

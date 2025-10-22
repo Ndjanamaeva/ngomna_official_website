@@ -305,12 +305,23 @@ sequelize.sync({ force: true }) // This will recreate the tables
   { title: 'mission.point3', content: 'Protect data of every user registered in the system', section: sections[2].id },
   { title: 'mission.point4', content: 'Support for account reset, installation assistance, and bug tracking', section: sections[2].id },
   { title: 'future.description', content: 'Expanding our platform with new services to enhance digital sovereignty and secure communications', section: sections[2].id },
+  { title: 'future.title', content: 'Future Perspectives', section: sections[2].id },
   { title: 'future.service1.title', content: 'Government Messaging', section: sections[2].id },
   { title: 'future.service1.description', content: 'Secure communications between public servants, reducing reliance on external platforms', section: sections[2].id },
   { title: 'future.service2.title', content: 'E-Services Integration', section: sections[2].id },
   { title: 'future.service2.description', content: 'Comprehensive digital services platform for all government interactions', section: sections[2].id },
   { title: 'future.service3.title', content: 'Data Sovereignty', section: sections[2].id },
   { title: 'future.service3.description', content: 'State control over citizen data with advanced security measures', section: sections[2].id }
+  ,
+  // Duplicate keys prefixed with 'about.' to match front-end translation keys where used
+  { title: 'about.future.description', content: 'Expanding our platform with new services to enhance digital sovereignty and secure communications', section: sections[2].id },
+  { title: 'about.future.title', content: 'Future Perspectives', section: sections[2].id },
+  { title: 'about.future.service1.title', content: 'Government Messaging', section: sections[2].id },
+  { title: 'about.future.service1.description', content: 'Secure communications between public servants, reducing reliance on external platforms', section: sections[2].id },
+  { title: 'about.future.service2.title', content: 'E-Services Integration', section: sections[2].id },
+  { title: 'about.future.service2.description', content: 'Comprehensive digital services platform for all government interactions', section: sections[2].id },
+  { title: 'about.future.service3.title', content: 'Data Sovereignty', section: sections[2].id },
+  { title: 'about.future.service3.description', content: 'State control over citizen data with advanced security measures', section: sections[2].id }
     ]);
 
     console.log('Text entries created:', texts);

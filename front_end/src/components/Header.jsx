@@ -194,13 +194,15 @@ const Header = () => {
       <div className="container mx-auto px-4 sm:px-6 h-full">
         <div className="flex items-center justify-between h-full">
           <div className="flex items-center space-x-2">
-            <div className="relative w-[80px] h-[80px] sm:w-[95px] sm:h-[95px] md:w-[120px] md:h-[120px] lg:w-[140px] lg:h-[140px] flex items-center justify-center">
-              <img 
-                src={logoUrl} 
-                alt="nGomna Logo" 
-                className="w-full h-full object-contain"
-                onLoad={() => setLogoLoaded(true)}
-              />
+            <div className="relative flex items-center justify-center">
+              <div className="w-20 sm:w-24 md:w-28 lg:w-32 xl:w-36 max-w-[9rem] aspect-square">
+                <img 
+                  src={logoUrl} 
+                  alt="nGomna Logo" 
+                  className="w-full h-full object-contain"
+                  onLoad={() => setLogoLoaded(true)}
+                />
+              </div>
 
               {/* spinner while fetching or while image hasn't loaded */}
               {(logoLoading || !logoLoaded) && (

@@ -86,15 +86,7 @@ const Hero = () => {
 
       {/* Animated Phone */}
       <motion.div
-        className="absolute right-4 sm:right-6 md:right-8 lg:right-10 xl:right-16 2xl:right-20 
-                   top-10 sm:top-12 md:top-14 lg:top-16 xl:top-14 2xl:top-12
-                   w-[180px] h-[360px] 
-                   sm:w-[200px] sm:h-[400px] 
-                   md:w-[220px] md:h-[440px] 
-                   lg:w-[250px] lg:h-[500px] 
-                   xl:w-[270px] xl:h-[540px] 
-                   2xl:w-[300px] 2xl:h-[600px] 
-                   opacity-90"
+        className="hero-phone-responsive"
         animate={{
           rotateY: [-15, 15, -15],
           rotateX: [-10, 10, -10],
@@ -178,7 +170,8 @@ const Hero = () => {
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div 
-          className="absolute -top-10 -right-10 w-72 h-72 bg-green-200 rounded-full opacity-20"
+          className="absolute -top-10 -right-10 bg-green-200 rounded-full opacity-20"
+          style={{ width: 'min(28vw, 288px)', height: 'min(28vw, 288px)'}}
           animate={{ 
             scale: [1, 1.2, 1],
             rotate: [0, 180, 360]
@@ -190,7 +183,8 @@ const Hero = () => {
           }}
         />
         <motion.div 
-          className="absolute -bottom-10 -left-10 w-96 h-96 bg-emerald-200 rounded-full opacity-20"
+          className="absolute -bottom-10 -left-10 bg-emerald-200 rounded-full opacity-20"
+          style={{ width: 'min(36vw, 384px)', height: 'min(36vw, 384px)'}}
           animate={{ 
             scale: [1, 1.1, 1],
             rotate: [360, 180, 0]
@@ -203,7 +197,8 @@ const Hero = () => {
           }}
         />
         <motion.div 
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-teal-200 rounded-full opacity-10"
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-teal-200 rounded-full opacity-10"
+          style={{ width: 'min(40vw, 320px)', height: 'min(40vw, 320px)'}}
           animate={{ 
             scale: [1, 1.5, 1],
             opacity: [0.1, 0.3, 0.1]
