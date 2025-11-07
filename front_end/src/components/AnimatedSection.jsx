@@ -7,9 +7,9 @@ const AnimatedSection = ({
   className = '',
   delay = 0,
   direction = 'up',
-  duration = 0.6
+  duration = 0.3
 }) => {
-  const { ref, isVisible } = useScrollAnimation(0.1);
+  const { ref, isVisible } = useScrollAnimation(0.05);
 
   const getInitialPosition = () => {
     switch (direction) {
@@ -40,7 +40,9 @@ const AnimatedSection = ({
         transition={{
           duration,
           delay,
-          ease: [0.25, 0.46, 0.45, 0.94]
+          ease: [0.2, 0.3, 0.4, 0.8],
+          stiffness: 120,
+          damping: 20
         }}
       >
         {children}
