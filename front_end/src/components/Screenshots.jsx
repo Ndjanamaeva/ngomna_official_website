@@ -18,31 +18,31 @@ const Screenshots = () => {
   
   const imageData = [
     { 
-      src: 'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=800',
+      src: 'https://res.cloudinary.com/dh1b4p0kd/image/upload/v1762519313/Welcome_to_chat_app_nwfvye.png',
       description: t('features.payslips.title'),
       smallerText: t('features.payslips.desc'),
       learnMoreLink: '/payslips'
     },
     { 
-      src: 'https://images.pexels.com/photos/607812/pexels-photo-607812.jpeg?auto=compress&cs=tinysrgb&w=800',
+      src: 'https://res.cloudinary.com/dh1b4p0kd/image/upload/v1762519313/Welcome_to_chat_app_nwfvye.png',
       description: t('features.notifications.title'),
       smallerText: t('features.notifications.desc'),
       learnMoreLink: '/notifications'
     },
     { 
-      src: 'https://images.pexels.com/photos/374074/pexels-photo-374074.jpeg?auto=compress&cs=tinysrgb&w=800',
+      src: 'https://res.cloudinary.com/dh1b4p0kd/image/upload/v1762519313/Welcome_to_chat_app_nwfvye.png',
       description: t('features.messaging.title'),
       smallerText: t('features.messaging.desc'),
       learnMoreLink: '/messaging'
     },
     { 
-      src: 'https://images.pexels.com/photos/1739842/pexels-photo-1739842.jpeg?auto=compress&cs=tinysrgb&w=800',
+      src: 'https://res.cloudinary.com/dh1b4p0kd/image/upload/v1762519313/Welcome_to_chat_app_nwfvye.png',
       description: t('features.security.title'),
       smallerText: t('features.security.desc'),
       learnMoreLink: '/security'
     },
     { 
-      src: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800',
+      src: 'https://res.cloudinary.com/dh1b4p0kd/image/upload/v1762519313/Welcome_to_chat_app_nwfvye.png',
       description: t('features.census.title'),
       smallerText: t('features.census.desc'),
       learnMoreLink: '/census'

@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git log:*)",
+      "Bash(ipconfig:*)",
+      "Bash(findstr:*)",
+      "Bash(netstat:*)",
+      "Bash(netsh advfirewall firewall show rule name=all)",
+      "Bash(netsh advfirewall firewall show rule:*)",
+      "Bash(netsh advfirewall:*)",
+      "Bash(curl:*)",
+      "Bash(tasklist:*)",
+      "Bash(npm run dev:*)",
+      "Bash(timeout /t 5)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
