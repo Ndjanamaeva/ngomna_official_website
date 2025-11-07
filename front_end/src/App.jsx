@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
+import ScrollProgress from './components/ScrollProgress';
 import HomePage from './pages/HomePage';
 import NewsPage from './pages/NewsPage';
 import Payslips from './pages/PayslipsPage';
@@ -17,6 +18,7 @@ import GovAI from './pages/GovAIPage';
 function App() {
   return (
     <div>
+      <ScrollProgress />
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
