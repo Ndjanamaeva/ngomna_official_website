@@ -147,49 +147,68 @@ img, picture, video, iframe {
   }
 }
 
-/* Modern scrollbar styling */
-::-webkit-scrollbar {
-  width: 8px;
-  background-color: transparent;
+/* Hide scrollbars but keep scrolling (cross-browser)
+   - Firefox: scrollbar-width: none
+   - IE 10+: -ms-overflow-style: none
+   - WebKit (Chrome, Safari): set scrollbar size to 0
+*/
+html, body {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
 }
 
-::-webkit-scrollbar-track {
-  background-color: rgba(0, 0, 0, 0.05);
-  border-radius: 10px;
+/* WebKit-based browsers */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: #4ade80; /* Light green color */
-  border-radius: 10px;
-  transition: background-color 0.3s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: #22c55e; /* Slightly darker green on hover */
-}
-
-/* Firefox scrollbar styling */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #4ade80 rgba(0, 0, 0, 0.05);
-}
-
-/* Add progress indicator */
-.scroll-progress-container {
+/* Modern vertical scroll progress bar on the right */
+.scroll-progress {
   position: fixed;
   top: 0;
-  right: 0;
-  width: 8px;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.05);
-  z-index: 1000;
+  bottom: 0;
+  height: 100vh;
+  display: block;
+  z-index: 9999;
+  pointer-events: none; /* allow clicks through */
 }
 
-.scroll-progress-bar {
+.scroll-progress__track {
   position: absolute;
-  top: 0;
+  inset: 8px 0; /* small padding from top/bottom */
+  left: 0;
   right: 0;
+  margin: auto;
+  height: calc(100% - 16px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.scroll-progress__bar {
   width: 100%;
-  background-color: #4ade80;
-  transition: height 0.1s ease;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(16,185,129,0.95), rgba(5,150,105,0.95)); /* green fallback */
+  border-radius: 8px;
+  transform: scaleY(0);
+  transform-origin: top;
+  box-shadow: 0 4px 12px rgba(5,150,105,0.12);
+  transition: box-shadow 180ms ease, background 200ms ease;
+  pointer-events: auto; /* keep it interactive if needed */
+}
+
+/* subtle hover expansion when pointer is near (only for devices with pointer) */
+@media (hover: hover) and (pointer: fine) {
+  .scroll-progress:hover .scroll-progress__bar {
+    box-shadow: 0 8px 20px rgba(59,130,246,0.22);
+    transform-origin: top;
+  }
+}
+
+/* For accessibility and smaller screens reduce thickness by default */
+@media (max-width: 640px) {
+  .scroll-progress { right: 8px !important; }
+  .scroll-progress__bar { border-radius: 6px; }
 }
