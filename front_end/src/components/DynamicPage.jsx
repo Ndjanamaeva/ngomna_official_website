@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import Header from './Header';
 import Footer from './Footer';
+import { API_URL } from '../config/api';
 
 const DynamicPage = () => {
   const location = useLocation();
@@ -22,13 +23,13 @@ const DynamicPage = () => {
       try {
         // Get page by URL
         const pageUrl = location.pathname;
-        const pageRes = await axios.get(`http://localhost:5000/api/pages/url/${pageUrl}`);
+        const pageRes = await axios.get(`${API_URL}/api/pages/url/${pageUrl}`);
         const pageData = pageRes.data;
         setPage(pageData);
 
         // Fetch hero content (page + section 2)
         try {
-          const heroRes = await axios.get(`http://localhost:5000/api/text/page/${pageData.id}/section/2`);
+          const heroRes = await axios.get(`${API_URL}/api/text/page/${pageData.id}/section/2`);
           setHeroContent(heroRes.data);
         } catch (err) {
           console.warn('No hero content found for this page');
@@ -37,7 +38,7 @@ const DynamicPage = () => {
 
         // Fetch body content (page only, no section)
         try {
-          const bodyRes = await axios.get(`http://localhost:5000/api/text/page/${pageData.id}`);
+          const bodyRes = await axios.get(`${API_URL}/api/text/page/${pageData.id}`);
           setBodyContent(Array.isArray(bodyRes.data) ? bodyRes.data : [bodyRes.data]);
         } catch (err) {
           console.warn('No body content found for this page');
@@ -46,7 +47,7 @@ const DynamicPage = () => {
 
         // Fetch page images
         try {
-          const imagesRes = await axios.get(`http://localhost:5000/api/images/page/${pageData.id}`);
+          const imagesRes = await axios.get(`${API_URL}/api/images/page/${pageData.id}`);
           setPageImages(Array.isArray(imagesRes.data) ? imagesRes.data : []);
         } catch (err) {
           console.warn('No images found for this page');
@@ -159,7 +160,7 @@ const DynamicPage = () => {
                   className="rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
                 >
                   <img
-                    src={image.url.startsWith('http') ? image.url : `http://localhost:5000${image.url}`}
+                    src={image.url.startsWith('http') ? image.url : `${API_URL}${image.url}`}
                     alt={image.name}
                     className="w-full h-64 object-cover"
                   />

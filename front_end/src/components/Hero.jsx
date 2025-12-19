@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Download, Play, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import axios from 'axios';
+import { API_URL } from '../config/api';
 
 const Hero = () => {
   const { t } = useLanguage();
@@ -21,7 +22,7 @@ const Hero = () => {
       setDbLoading(true);
       try {
         setDbError(false);
-        const res = await axios.get('http://localhost:5000/api/text/page/1/section/2');
+        const res = await axios.get(`${API_URL}/api/text/page/1/section/2`);
         if (res && res.data) {
           // allow empty strings from backend to be used as "loaded but empty"
           setDbTitle(res.data.title ?? '');
@@ -49,7 +50,7 @@ const Hero = () => {
       setPhoneLoading(true);
       setPhoneError(false);
       try {
-        const res = await axios.get('http://localhost:5000/api/images/name/phone_image');
+        const res = await axios.get(`${API_URL}/api/images/name/phone_image`);
         if (!mounted) return;
         const img = res && res.data ? res.data : null;
         // Only load the image directly from the backend. If backend is not reachable or
@@ -59,7 +60,7 @@ const Hero = () => {
           if (!/^https?:\/\//.test(rawUrl) && !rawUrl.startsWith('/')) rawUrl = '/' + rawUrl;
 
           // Prefer backend absolute URL. If the DB contains a relative path, prefix with backend origin.
-          const imageUrl = /^https?:\/\//.test(rawUrl) ? rawUrl : 'http://localhost:5000' + rawUrl;
+          const imageUrl = /^https?:\/\//.test(rawUrl) ? rawUrl : API_URL + rawUrl;
           setPhoneImageUrl(imageUrl);
         } else {
           // no image record -> keep phone empty

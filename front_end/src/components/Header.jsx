@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Smartphone, ChevronDown, FileText, Info, Bell, Users, MessageCircle, Baby, Shield, Key, Building, Bot } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import LanguageToggle from './LanguageToggle';
+import { API_URL } from '../config/api';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -43,7 +44,7 @@ const Header = () => {
   // Helper to fetch a single link by id from backend
   const fetchLinkById = useCallback(async (id) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/links/id/${id}`);
+      const res = await axios.get(`${API_URL}/api/links/id/${id}`);
       console.log(`link id ${id}:`, res.data);
       return res.data;
     } catch (err) {
@@ -62,12 +63,12 @@ const Header = () => {
     const fetchLogo = async () => {
       setLogoLoading(true);
       try {
-        const res = await axios.get('http://localhost:5000/api/images/name/ngomna_logo');
+        const res = await axios.get(`${API_URL}/api/images/name/ngomna_logo`);
         if (res && res.data && res.data.url) {
           // Construct full URL if it's a relative path
           const logoPath = res.data.url.startsWith('http')
             ? res.data.url
-            : `http://localhost:5000${res.data.url}`;
+            : `${API_URL}${res.data.url}`;
           setLogoUrl(logoPath);
           setLogoFetchedFromBackend(true);
         } else {
@@ -88,7 +89,7 @@ const Header = () => {
   // Fetch menu items for a given menuId
   const fetchMenuItems = useCallback(async (menuId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/menuitems/${menuId}`);
+      const response = await axios.get(`${API_URL}/api/menuitems/${menuId}`);
       // Set menu items with the correct label and link
       setFeatures(response.data.map(item => ({
         id: item.id,
@@ -105,7 +106,7 @@ const Header = () => {
   useEffect(() => {
     const fetchMenus = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/menus');
+        const res = await axios.get(`${API_URL}/api/menus`);
         const menus = res.data;
         // Find the features menu by title (created as 'features' in backend seed)
         const featuresMenu = menus.find(m => m.title && m.title.toLowerCase() === 'features');
@@ -141,13 +142,13 @@ const Header = () => {
     const fetchLinks = async () => {
       try {
         // Only fetch features menu links (menuId=1) since about and contact were removed
-        const featuresResponse = await axios.get('http://localhost:5000/api/links/1');
+        const featuresResponse = await axios.get(`${API_URL}/api/links/1`);
         setFeaturesLinks(featuresResponse.data || []);
         console.log('featuresLinks:', featuresResponse.data);
 
         // Fetch all links and store them for mapping nav items dynamically
         try {
-          const allRes = await axios.get('http://localhost:5000/api/links');
+          const allRes = await axios.get(`${API_URL}/api/links`);
           setAllLinks(allRes.data || []);
           console.log('allLinks:', allRes.data);
           // simple verification: require that the endpoint returned a non-empty array

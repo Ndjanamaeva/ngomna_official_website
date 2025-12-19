@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Eye, Target, ArrowRight, Shield, Users, Globe, Mail, Smartphone, Bell, Lock, CheckCircle, Star } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import AnimatedSection from './AnimatedSection';
+import { API_URL } from '../config/api';
 
 const About = () => {
   const { t } = useLanguage();
@@ -17,7 +18,7 @@ const About = () => {
       setRemoteError(false);
       try {
         // Section id 3 corresponds to 'about_ngomna' created in the seed data
-        const res = await fetch('http://localhost:5000/api/text/section/3');
+        const res = await fetch(`${API_URL}/api/text/section/3`);
         if (!mounted) return;
         if (!res.ok) throw new Error('Network response was not ok');
         const data = await res.json();
