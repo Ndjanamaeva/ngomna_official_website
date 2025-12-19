@@ -5,7 +5,7 @@ const cors = require('cors');
 const path = require('path');
 const menuRoutes = require('./Routes/routes');
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 app.use(cors()); // Enable CORS for frontend interaction
 app.use(express.json()); // Parse incoming JSON requests
@@ -16,7 +16,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Use routes
 app.use(menuRoutes);
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+// Export the Express app for Vercel
+module.exports = app;
+
+// Start the server (only in local development)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+  });
+}

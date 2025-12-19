@@ -3,11 +3,22 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
 // Set up Sequelize and PostgreSQL
-const sequelize = new Sequelize('ngomna', 'postgres', '12345', {
-  host: 'localhost',
-  dialect: 'postgres',
-  port: 5433
-});
+const sequelize = new Sequelize(
+  process.env.DB_NAME || 'ngomna',
+  process.env.DB_USER || 'postgres',
+  process.env.DB_PASSWORD || '12345',
+  {
+    host: process.env.DB_HOST || 'localhost',
+    dialect: 'postgres',
+    port: process.env.DB_PORT || 5433,
+    dialectOptions: process.env.DB_SSL === 'true' ? {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    } : {}
+  }
+);
 
 // Define the Menu model (menu table)
 const Menu = sequelize.define('Menu', {
