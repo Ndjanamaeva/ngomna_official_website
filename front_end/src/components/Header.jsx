@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,6 +10,18 @@ import { API_URL } from '../config/api';
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const hoverTimer = useRef(null);
+
+    const openDropdown = () => {
+      if (hoverTimer.current) clearTimeout(hoverTimer.current);
+      setIsDropdownOpen(true);
+    };
+
+    const closeDropdown = () => {
+      if (hoverTimer.current) clearTimeout(hoverTimer.current);
+      hoverTimer.current = setTimeout(() => setIsDropdownOpen(false), 80);
+    };
+
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { t } = useLanguage();
@@ -27,11 +39,7 @@ const Header = () => {
     payslips: <FileText size={16} />,
     information: <Info size={16} />,
     notifications: <Bell size={16} />,
-    census: <Users size={16} />,
     messaging: <MessageCircle size={16} />,
-    children: <Baby size={16} />,
-    security: <Shield size={16} />,
-    otp: <Key size={16} />,
     dgi: <Building size={16} />,
     'gov-ai': <Bot size={16} />,
   };
@@ -190,7 +198,7 @@ const Header = () => {
 
   return (
     <header className={`fixed w-full z-50 transition-all duration-300 h-16 sm:h-20 ${
-      scrolled ? 'bg-white/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
+      scrolled ? 'bg-white/20 backdrop-blur-md shadow-sm' : 'bg-transparent'
     }`}>
       <div className="container mx-auto px-4 sm:px-6 h-full">
         <div className="flex items-center justify-between h-full">
@@ -235,7 +243,11 @@ const Header = () => {
                 if (homeLink && homeLink.url) return <Link to={homeLink.url} className="text-gray-700 hover:text-green-600 transition-colors">Home</Link>;
                 return <Link to="/" className="text-gray-700 hover:text-green-600 transition-colors">Home</Link>;
               })()}
-              <div className="relative dropdown-container">
+              <div
+                className="relative dropdown-container"
+                onMouseEnter={openDropdown}
+                onMouseLeave={closeDropdown}
+              >
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="flex items-center space-x-1 text-gray-700 hover:text-green-600 transition-colors"
@@ -248,8 +260,8 @@ const Header = () => {
                 </button>
                 
                 {isDropdownOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-50 animate-fade-in-up">
-                    <div className="px-4 py-2 border-b border-gray-100">
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-transparent backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 py-2 z-50 animate-fade-in-up">
+                    <div className="px-4 py-2 border-b border-white/20">
                       <h3 className="text-sm font-semibold text-gray-900">{t('nav.features.title')}</h3>
                       <p className="text-xs text-gray-500">{t('nav.features.subtitle')}</p>
                     </div>
