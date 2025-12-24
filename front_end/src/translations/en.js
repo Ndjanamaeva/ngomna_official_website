@@ -89,21 +89,6 @@ export const en = {
   'features.otp.title': 'OTP Authentication',
   'features.otp.desc': 'Secure one-time password system for enhanced transaction security.',
   
-  'features.title': 'Why Choose nGomna?',
-  'features.subtitle': 'Discover the powerful features that make nGomna the perfect choice for your mobile experience.',
-  'features.fast.title': 'Lightning Fast',
-  'features.fast.desc': 'Experience unprecedented speed with our optimized algorithms and cutting-edge technology.',
-  'features.secure.title': 'Secure & Private',
-  'features.secure.desc': 'Your data is protected with end-to-end encryption and privacy-first design principles.',
-  'features.friendly.title': 'User-Friendly',
-  'features.friendly.desc': 'Intuitive interface designed with love, making every interaction smooth and delightful.',
-  'features.community.title': 'Community Driven',
-  'features.community.desc': 'Join millions of users who trust nGomna for their daily mobile experience.',
-  'features.quality.title': 'Premium Quality',
-  'features.quality.desc': 'Crafted with attention to detail and built to exceed your expectations.',
-  'features.platform.title': 'Cross-Platform',
-  'features.platform.desc': 'Available on all major platforms with seamless synchronization across devices.',
-  
   // Screenshots Section
   'screenshots.title': 'See nGomna in Action',
   'screenshots.subtitle': 'Experience the beautiful interface and smooth user experience through our interactive showcase.',

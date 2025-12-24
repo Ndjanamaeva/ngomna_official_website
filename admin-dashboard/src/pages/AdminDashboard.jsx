@@ -70,14 +70,6 @@ const AdminDashboard = () => {
         buttonText: 'Download Now',
         backgroundImage: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg'
       },
-      features: {
-        title: 'Why Choose nGomna?',
-        subtitle: 'Discover the powerful features that make nGomna special.',
-        items: [
-          { title: 'Lightning Fast', description: 'Experience unprecedented speed' },
-          { title: 'Secure & Private', description: 'Your data is protected' }
-        ]
-      },
       news: {
         title: 'Latest News & Updates',
         subtitle: 'Stay up to date with the latest developments'
