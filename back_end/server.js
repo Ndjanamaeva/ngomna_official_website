@@ -12,8 +12,7 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
   'http://localhost:5000',
-  'https://2k2bhq6d-5000.use.devtunnels.ms/',
-  'https://ngomna-official-website.vercel.app'
+  'https://2k2bhq6d-5000.use.devtunnels.ms/'
 ];
 
 app.use(cors({
@@ -48,12 +47,7 @@ app.get('/', (req, res) => {
 // Use routes
 app.use(menuRoutes);
 
-// Export the Express app for Vercel
-module.exports = app;
-
-// Start the server (only in local development)
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-  });
-}
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
