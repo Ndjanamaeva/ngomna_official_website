@@ -12,20 +12,12 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
   'http://localhost:5000',
-  'https://2k2bhq6d-5000.use.devtunnels.ms',
-  // Add your Vercel domain(s) here once deployed
-  // 'https://your-domain.vercel.app'
+  'https://2k2bhq6d-5000.use.devtunnels.ms/',
+  'https://ngomna-official-website.vercel.app'
 ];
 
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or Postman)
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true, // Allow all origins for debugging
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
