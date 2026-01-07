@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --host",
     "dev:lan": "vite --host 10.100.213.4",
-    "build": "vite build",
+    "build": "npm run build",
     "lint": "eslint .",
     "preview": "vite preview --host"
   },
