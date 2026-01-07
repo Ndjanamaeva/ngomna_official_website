@@ -35,7 +35,7 @@ export const fr = {
   'about.badge': 'À propos de nGomna',
   'about.title': 'À propos de nGomna',
   'about.subtitle': 'Transformer les Services Gouvernementaux',
-  'about.description': 'nGomna est une application mobile de pointe développée en partenariat avec les institutions gouvernementales pour fournir aux citoyens un accès transparent aux services essentiels. Des bulletins de paie aux documents officiels, nous transformons votre interaction avec les services gouvernementaux.',
+  'about.description': 'nGomna est une application mobile de pointe développée en partenariat avec les institutions gouvernementales du Cameroun pour transformer l\'interaction entre les citoyens et les services gouvernementaux.',
   'about.features.government': 'Partenariat gouvernemental officiel',
   'about.features.secure': 'Sécurité et chiffrement de niveau bancaire',
   'about.features.multilingual': 'Support multilingue',

@@ -294,7 +294,7 @@ sequelize.sync({ force: true }) // This will recreate the tables
       { title: 'Facebook', content: 'Follow us on Facebook for updates and more.', pageId: pages[11].id }
   ,
   // About nGomna section texts (section: about_ngomna -> sections[2].id)
-  { title: 'about.description', content: 'nGomna is a cutting-edge mobile application developed in partnership with government institutions to provide citizens with seamless access to essential services. From payslips to official documents, we\'re transforming how you interact with government services.', section: sections[2].id },
+  { title: 'about.description', content: 'nGomna is a cutting-edge mobile application developed in partnership with Cameroon Government institutions to transform the interaction between citizens and Government services.', section: sections[2].id },
   { title: 'vision.point1', content: 'Bring Cameroonian public servants closer to government services', section: sections[2].id },
   { title: 'vision.point2', content: 'Bring ordinary citizens closer to government services', section: sections[2].id },
   { title: 'vision.point3', content: 'Foundational building block of e-citizenship', section: sections[2].id },

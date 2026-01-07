@@ -130,14 +130,17 @@ const About = () => {
     }
   ];
 
-  // Helper to resolve remote text for either 'future.xxx' or 'about.future.xxx'
+  // Helper to resolve remote text for either 'future.xxx' or 'about.future.xxx', with fallback to translations
   const resolveFutureKey = (key) => {
-    if (!remoteTexts) return null;
-    const short = `future.${key}`.toLowerCase();
-    const prefixed = `about.future.${key}`.toLowerCase();
-    if (remoteTexts[short] && remoteTexts[short].content) return remoteTexts[short].content;
-    if (remoteTexts[prefixed] && remoteTexts[prefixed].content) return remoteTexts[prefixed].content;
-    return null;
+    // First try remote data
+    if (remoteTexts) {
+      const short = `future.${key}`.toLowerCase();
+      const prefixed = `about.future.${key}`.toLowerCase();
+      if (remoteTexts[short] && remoteTexts[short].content) return remoteTexts[short].content;
+      if (remoteTexts[prefixed] && remoteTexts[prefixed].content) return remoteTexts[prefixed].content;
+    }
+    // Fallback to translations
+    return t(`about.future.${key}`);
   };
 
   // Refs and state for stacking animation
@@ -189,7 +192,7 @@ const About = () => {
     hidden: {},
     visible: {
       transition: {
-        staggerChildren: 0.15,
+        staggerChildren: 0.2,
         delayChildren: 0
       }
     }
@@ -199,7 +202,7 @@ const About = () => {
     hidden: {},
     visible: {
       transition: {
-        staggerChildren: 0.15,
+        staggerChildren: 0.2,
         delayChildren: 0.1
       }
     }
@@ -219,7 +222,7 @@ const About = () => {
     <section id="about" className="py-12 sm:py-16 lg:py-20 bg-blue-50">
       <div className="container mx-auto px-4 sm:px-6">
         {/* Header */}
-        <AnimatedSection className="text-center mb-16">
+        <AnimatedSection className="text-center mb-32">
           <motion.h2 
             className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 px-4"
             initial={{ y: 30, opacity: 0 }}
@@ -229,24 +232,30 @@ const About = () => {
           >
             {t('about.title')}
           </motion.h2>
-          <motion.p 
-            className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto px-4"
-            initial={{ y: 30, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            viewport={{ once: true }}
-          >
-            {remoteLoading || remoteError || !(remoteTexts && remoteTexts['about.description'] && remoteTexts['about.description'].content) ? (
-              <div className="flex items-center justify-center py-6">
-                <svg className="animate-spin h-8 w-8 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-                </svg>
-              </div>
-            ) : (
-              <span>{remoteTexts['about.description'].content}</span>
-            )}
-          </motion.p>
+          {remoteLoading && !remoteTexts ? (
+            <motion.div 
+              className="flex items-center justify-center py-6"
+              initial={{ y: 30, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+              viewport={{ once: true }}
+            >
+              <svg className="animate-spin h-8 w-8 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+              </svg>
+            </motion.div>
+          ) : (
+            <motion.p 
+              className="text-base sm:text-lg lg:text-xl text-gray-600 mx-auto px-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              {t('about.description')}
+            </motion.p>
+          )}
           {/* status badge removed per user request */}
         </AnimatedSection>
 
@@ -276,8 +285,10 @@ const About = () => {
                 {visionPoints.map((point, index) => (
                   <motion.div
                     key={index}
-                    className="flex items-start space-x-4 p-4 bg-white rounded-xl shadow-sm border border-gray-100"
+                    className="flex items-start space-x-4 p-4 bg-white rounded-xl shadow-sm border border-gray-100 cursor-pointer"
                     variants={leftChild}
+                    whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(74, 222, 128, 0.7), 0 20px 25px -5px rgba(0, 0, 0, 0.1)' }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 10 }}
                   >
                     <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 flex-shrink-0">
                       {point.icon}
@@ -321,8 +332,10 @@ const About = () => {
                 {missionPoints.map((point, index) => (
                   <motion.div
                     key={index}
-                    className="flex items-start space-x-4 p-4 bg-white rounded-xl shadow-sm border border-gray-100"
+                    className="flex items-start space-x-4 p-4 bg-white rounded-xl shadow-sm border border-gray-100 cursor-pointer"
                     variants={rightChild}
+                    whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(74, 222, 128, 0.7), 0 20px 25px -5px rgba(0, 0, 0, 0.1)' }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 10 }}
                   >
                     <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-green-600 flex-shrink-0">
                       {point.icon}
@@ -361,14 +374,22 @@ const About = () => {
               </div>
               <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">{remoteTexts && remoteTexts['future.title'] && remoteTexts['future.title'].content ? remoteTexts['future.title'].content : t('about.future.title')}</h3>
             </div>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">{remoteTexts && remoteTexts['future.description'] && remoteTexts['future.description'].content ? remoteTexts['future.description'].content : (
-              remoteLoading || remoteError ? (
-                <svg className="animate-spin inline-block h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-                </svg>
-              ) : t('about.future.description')
-            )}</p>
+            <motion.p 
+              className="text-lg text-gray-600 max-w-3xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              {remoteTexts && remoteTexts['future.description'] && remoteTexts['future.description'].content ? remoteTexts['future.description'].content : (
+                remoteLoading || remoteError ? (
+                  <svg className="animate-spin inline-block h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                  </svg>
+                ) : t('about.future.description')
+              )}
+            </motion.p>
           </motion.div>
 
           <div className="relative">
@@ -408,35 +429,22 @@ const About = () => {
                 return (
                   <motion.div
                     key={i}
-                    className="absolute bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
+                    className="absolute bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden cursor-pointer pointer-events-auto"
                     initial={{ x: centerX, y: centerY, opacity: 1, scale: 0.98 }}
                     animate={animateCards ? { x: finalStyle.left, y: finalStyle.top, opacity: 1, scale: 1 } : {}}
                     transition={{ type: 'spring', stiffness: 120, damping: 18, delay: i * 0.12 }}
                     style={{ width: finalStyle.width, height: finalStyle.height }}
+                    whileHover={{ scale: 1.08, boxShadow: '0 0 40px rgba(74, 222, 128, 0.8), 0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}
                   >
                     <div className="p-8 h-full box-border">
                       <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-white mb-6">
                         {futureServices[i].icon}
                       </div>
                       <div className="mb-4">
-                        {resolveFutureKey(`service${i+1}.title`) ? (
-                          <h4 className="text-xl font-bold text-gray-900">{resolveFutureKey(`service${i+1}.title`)}</h4>
-                        ) : (
-                          <svg className="animate-spin h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-                          </svg>
-                        )}
+                        <h4 className="text-xl font-bold text-gray-900">{resolveFutureKey(`service${i+1}.title`)}</h4>
                       </div>
                       <div>
-                        {resolveFutureKey(`service${i+1}.description`) ? (
-                          <p className="text-gray-600 leading-relaxed">{resolveFutureKey(`service${i+1}.description`)}</p>
-                        ) : (
-                          <svg className="animate-spin h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-                          </svg>
-                        )}
+                        <p className="text-gray-700 font-medium leading-relaxed">{resolveFutureKey(`service${i+1}.description`)}</p>
                       </div>
                     </div>
                   </motion.div>

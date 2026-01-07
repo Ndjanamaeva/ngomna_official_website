@@ -74,7 +74,7 @@ exports.getTextByPageAndSection = async (req, res) => {
 exports.getTextBySection = async (req, res) => {
   try {
     const { sectionId } = req.params;
-    const texts = await Text.findAll({ where: { section: sectionId, pageId: null } });
+    const texts = await Text.findAll({ where: { section: sectionId } });
 
     if (!texts || texts.length === 0) {
       return res.status(404).json({ message: 'Text not found for that section' });
